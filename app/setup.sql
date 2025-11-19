@@ -1,7 +1,7 @@
 -- -- -- -- -- -- CRÉATION DE LA BASE-- -- -- -- -- -- -- -- -- -- -- -- -
-CREATE DATABASE IF NOT EXISTS `blog_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS `projet_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE `blog_db`;
+USE `projet_db`;
 
 -- -- -- -- -- -- -DROP (au cas ou)-- -- -- -- -- -- -- -- -- -- -- -- -- -- -
 SET
@@ -122,9 +122,8 @@ CREATE TABLE `Commentaires` (
 -- -- -- -- -- -- -- -- -- -- INSERTION DES DONNÉES DE TEST-- -- -- -- -- -- -- -- -- -- 
 -- -- -Utilisateurs (mot de passe hashé)
 SET
-    @HASHED_PASSWORD = '$2y$10$Q7iR7/h7Gq6yRzW2gP0pT.0.1oQ5t4T8W0y5fG8E7C8zM7/V2C9a';
+    @HASHED_PASSWORD = '$2y$10$Q7iR7/h7Gq6yRzW2gP0pT.0.1oQ5t4T8W0y5fG8E7C8zM7/V2C9a';   --  Hash pour le mot de passe 'vttadmin'
 
---  Hash pour le mot de passe 'vttadmin'
 INSERT INTO
     `Utilisateurs` (`id`, `nom_utilisateur`, `email`, `mot_de_passe`)
 VALUES
