@@ -24,6 +24,9 @@ switch ($route) {
         (new LoginController($twig))->index();
         break;
 
+    case 'articlesList':
+        echo $twig->render('articlesList.twig');
+        break;
     case 'home':
     default:
         echo $twig->render('signup.twig');

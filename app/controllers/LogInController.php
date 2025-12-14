@@ -23,9 +23,10 @@ class LoginController {
                 $user = $userModel->find_by_email($email);
 
                 if ($user) {
-                    echo $user['nom_utilisateur'];
                     if ($userModel->verify_password($email, $password)){
                         SessionManager::getInstance()->set('user_name', $user['nom_utilisateur']);
+                        header('Location: app.php?route=articlesList');
+                        exit;
                     } else {
                         $error = "mot de passe incorrect";
                     }

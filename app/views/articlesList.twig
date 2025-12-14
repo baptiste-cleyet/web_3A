@@ -9,8 +9,11 @@
 		<link rel="stylesheet" href="static/css/style.css" />
 		<link rel="icon" href="static/img/icone.png" />
 		<link rel="stylesheet" href="static/css/articlesList.css" />
-	</head>
 
+	</head>
+    {% if username %}
+        <div>Bienvenue {{ user_name }} !! </div>
+    {% endif %}
 	<body>
 		<header>
 			<div class="collapse bg-dark" id="navbarHeader">
