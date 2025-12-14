@@ -7,14 +7,18 @@
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-
+{% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
 <body class="text-center">
-<form class="form-signin">
+
+<form action="app.php?route=signup" class="form-signin" method="POST">
     <p>Créez un compte</p>
 
     <div data-mdb-input-init class="form-outline mb-4">
         <input
                 type="email"
+                name="email"
                 id="form2Example11"
                 class="form-control"
                 placeholder="Adresse mail"
@@ -23,7 +27,8 @@
 
     <div data-mdb-input-init class="form-outline mb-4">
         <input
-                type="username"
+                type="text"
+                name="username"
                 id="form2Example11"
                 class="form-control"
                 placeholder="Nom d'utilisateur"
@@ -34,6 +39,7 @@
     <div data-mdb-input-init class="form-outline mb-4">
         <input
                 type="password"
+                name="password1"
                 id="form2Example22"
                 class="form-control"
                 placeholder="Mot de passe"
@@ -43,6 +49,7 @@
     <div data-mdb-input-init class="form-outline mb-4">
         <input
                 type="password"
+                name="password2"
                 id="form2Example22"
                 class="form-control"
                 placeholder="Confirmez le mot de passe"
@@ -55,7 +62,7 @@
                 data-mdb-button-init
                 data-mdb-ripple-init
                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                type="button"
+                type="submit"
         >
             S'inscire
         </button>
@@ -65,14 +72,15 @@
             class="d-flex align-items-center justify-content-center pb-4"
     >
         <p class="mb-0 me-2">Vous avez déjà compte?</p>
-        <button
+        <a
                 type="button"
                 data-mdb-button-init
                 data-mdb-ripple-init
                 class="btn btn-outline-danger"
+                href="app.php?route=login"
         >
             Se connecter
-        </button>
+        </a>
     </div>
 </form>
 </body>

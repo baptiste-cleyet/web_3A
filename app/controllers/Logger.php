@@ -3,7 +3,7 @@ class Logger {
     private static ?Logger $instance = null;
     private string $logFile;
     private function __construct() {
-        $this->logFile = __DIR__ . '/app.log';
+        $this->logFile = __DIR__ . '/../app.log';
     }
     public static function getInstance(): Logger {
         if (self::$instance === null) {
