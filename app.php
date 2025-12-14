@@ -17,4 +17,5 @@ $options_dev = array('cache' => false, 'autoescape' => true);
 $twig = new Twig\Environment($loader); 
 
 /* charger+compiler le template, exécuter, envoyer le résultat au navigateur */ 
-echo $twig->render('login.twig');
+echo $twig->render('signup.twig');
+

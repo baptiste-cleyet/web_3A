@@ -10,7 +10,7 @@
 
 <body class="text-center">
 <form class="form-signin">
-    <p>Connectez-vous à votre compte</p>
+    <p>Créez un compte</p>
 
     <div data-mdb-input-init class="form-outline mb-4">
         <input
@@ -23,12 +23,32 @@
 
     <div data-mdb-input-init class="form-outline mb-4">
         <input
+                type="username"
+                id="form2Example11"
+                class="form-control"
+                placeholder="Nom d'utilisateur"
+        />
+    </div>
+
+
+    <div data-mdb-input-init class="form-outline mb-4">
+        <input
                 type="password"
                 id="form2Example22"
                 class="form-control"
                 placeholder="Mot de passe"
         />
     </div>
+
+    <div data-mdb-input-init class="form-outline mb-4">
+        <input
+                type="password"
+                id="form2Example22"
+                class="form-control"
+                placeholder="Confirmez le mot de passe"
+        />
+    </div>
+
 
     <div class="text-center pt-1 mb-5 pb-1">
         <button
@@ -37,24 +57,22 @@
                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                 type="button"
         >
-            Se connecter
+            S'inscire
         </button>
-        <a class="text-muted" href="#!">Mot de passe oublié?</a>
     </div>
 
     <div
             class="d-flex align-items-center justify-content-center pb-4"
     >
-        <p class="mb-0 me-2">Vous n'avez pas encore de compte?</p>
-        <a
+        <p class="mb-0 me-2">Vous avez déjà compte?</p>
+        <button
                 type="button"
                 data-mdb-button-init
                 data-mdb-ripple-init
                 class="btn btn-outline-danger"
-                href=""
         >
-            S'inscrire
-        </a>
+            Se connecter
+        </button>
     </div>
 </form>
 </body>
