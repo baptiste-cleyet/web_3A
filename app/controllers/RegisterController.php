@@ -29,7 +29,7 @@ class RegisterController {
                     $userModel = new User();
 
                     if ($userModel->register($nom, $email, $password1)) {
-                        SessionManager->set('user_name', $nom);
+                        SessionManager::getInstance()->set('user_name', $nom);
                         header('Location: app.php?route=login&success=1');
                         exit;
 

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../controllers/DataBase.php';
 require_once __DIR__ . '/../controllers/Logger.php';
 class User
 {
-    public function register($email, $username, $password){
+    public function register($username, $email, $password){
         $pdo = Database::getInstance()->getConnection();
 
         $sql = "INSERT INTO Utilisateurs (nom_utilisateur, email, mot_de_passe) VALUES (:nom_utilisateur, :email, :mot_de_passe)";
@@ -24,5 +24,32 @@ class User
             Logger::getInstance()->log($errorMessage);
             return false;
         }
+    }
+
+    public function find_by_email($email){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT * FROM Utilisateurs WHERE email = :email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':email' => $email]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function verify_password($email, $password){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT mot_de_passe FROM Utilisateurs WHERE email = :email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':email' => $email]);
+
+        $hashedPassword = $stmt->fetch(PDO::FETCH_ASSOC)['mot_de_passe'];
+
+        if (password_verify($password,$hashedPassword)){
+            return true;
+        }
+        return false;
+
+
     }
 }

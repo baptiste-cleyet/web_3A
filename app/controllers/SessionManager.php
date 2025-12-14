@@ -12,7 +12,7 @@ class SessionManager {
         }
         return self::$instance;
     }
-    public function set(string $key, mixed $value): void {
+    public static function set(string $key, mixed $value): void {
         $_SESSION[$key] = $value;
     }
     public function get(string $key): mixed {
