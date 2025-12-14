@@ -1,1 +1,0 @@
-[2025-12-14 16:16:36] ERREUR INSCRIPTION - username: elie.stroobant@gmail.com - Raison SQL: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'elie.stroobant@gmail.com' for key 'nom_utilisateur'
