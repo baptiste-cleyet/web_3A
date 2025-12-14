@@ -29,7 +29,8 @@ class RegisterController {
                     $userModel = new User();
 
                     if ($userModel->register($nom, $email, $password1)) {
-                        SessionManager::getInstance()->set('user_name', $nom);
+                        $session = SessionManager::getInstance();
+                        $session->set('user_name', $nom);
                         header('Location: app.php?route=login&success=1');
                         exit;
 
