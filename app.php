@@ -18,13 +18,15 @@ switch ($route) {
         require_once 'app/controllers/RegisterController.php';
         (new RegisterController($twig))->index();
         break;
-
+    
     case 'login':
         require_once 'app/controllers/LoginController.php';
         (new LoginController($twig))->index();
         break;
-
+        
     case 'articlesList':
+        require_once 'app/controllers/articlesListController.php';
+        (new articlesListController($twig))->index();
         echo $twig->render('articlesList.twig');
         break;
     case 'home':

@@ -11,11 +11,11 @@ class articlesListController
 
     public function index() {
         $session = SessionManager::getInstance();
-        $username = $session->get('user_name');
+        $username = $session->get('username');
 
 
         echo $this->twig->render('articlesList.twig', [
-            'user_name' => $username
+            'username' => $username
         ]);
     }
 }

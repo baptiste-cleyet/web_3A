@@ -24,7 +24,7 @@ class LoginController {
 
                 if ($user) {
                     if ($userModel->verify_password($email, $password)){
-                        SessionManager::getInstance()->set('user_name', $user['nom_utilisateur']);
+                        SessionManager::getInstance()->set('username', $user['nom_utilisateur']);
                         header('Location: app.php?route=articlesList');
                         exit;
                     } else {
