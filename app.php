@@ -29,7 +29,7 @@ switch ($route) {
         break;
     case 'home':
     default:
-        echo $twig->render('signup.twig');
+        echo $twig->render('login.twig');
         break;
 }
 
