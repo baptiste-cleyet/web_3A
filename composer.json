@@ -1,5 +1,9 @@
 {
     "require": {
-        "twig/twig": "v3.7.1"
+        "twig/twig": "v3.7.1",
+        "twig/markdown-extra": "^3.12",
+        "twig/extra-bundle": "^3.22",
+        "symfony/twig-bundle": "^7.1",
+        "erusev/parsedown": "^1.7"
     }
 }

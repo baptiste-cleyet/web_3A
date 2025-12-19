@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__ . '/SessionManager.php';
-class articlesListController
+require_once __DIR__ . '/../models/Article.php';
+class ArticlesListController
 {
     private $twig;
 
@@ -13,9 +14,14 @@ class articlesListController
         $session = SessionManager::getInstance();
         $username = $session->get('username');
 
+        $articlesModel = new Article();
+        $articlesList = $articlesModel->lastArticles(9);
+
 
         echo $this->twig->render('articlesList.twig', [
-            'username' => $username
+            'username' => $username,
+            'articlesList' => $articlesList,
+            'titre_doc' => "Articles récents"
         ]);
     }
 }

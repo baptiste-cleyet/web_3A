@@ -1,0 +1,27 @@
+{% extends "head.twig" %} {% block stylesheets %}
+<link rel="stylesheet" href="static/css/articlePage.css" />
+{% endblock stylesheets %} {% block content %}
+<div class="blog-post">
+	<h2 class="blog-post-title">{{ article.titre }}</h2>
+	<p class="blog-post-meta">
+		{{ article.date_creation }} par {{ auteur.nom_utilisateur }}
+
+		<br />Mis à jour le {{ article.date_mise_a_jour }}
+	</p>
+
+	<p>
+		{% apply markdown_to_html %}
+		{{ article.contenu }}
+		{% endapply %}
+	</p>
+
+	<div>
+		<br />
+		<br />
+		<hr />
+		<h6>Tags</h6>
+		{% for tag in tags %}
+		{{ tag.nom_tag }} - {% endfor %}
+	</div>
+</div>
+{% endblock content %}
