@@ -38,7 +38,7 @@ class User
 
     public function verify_password($email, $password){
         $pdo = Database::getInstance()->getConnection();
-
+        
         $sql = "SELECT mot_de_passe FROM Utilisateurs WHERE email = :email";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':email' => $email]);
@@ -49,7 +49,22 @@ class User
             return true;
         }
         return false;
+    }
+    
+    public function role($id){
+        $pdo = Database::getInstance()->getConnection();
 
+        $sql = "SELECT nom_role FROM roles
+        JOIN role_user ON role_user.role_id = roles.id
+        JOIN utilisateurs ON utilisateurs.id = role_user.user_id
+        WHERE utilisateurs.id = :id;";
 
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC); 
     }
 }
