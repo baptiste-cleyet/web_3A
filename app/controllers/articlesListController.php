@@ -13,7 +13,7 @@ class ArticlesListController
     public function index() {
         $session = SessionManager::getInstance();
         $username = $session->get('username');
-        $role = $session->get('role');
+        $roles = $session->get('roles');
 
         $articlesModel = new Article();
         $articlesList = $articlesModel->lastArticles(9);
@@ -21,7 +21,7 @@ class ArticlesListController
 
         echo $this->twig->render('articlesList.twig', [
             'username' => $username,
-            'role' => $role,
+            'roles' => $roles,
             'articlesList' => $articlesList,
             'titre_doc' => "Articles récents"
         ]);

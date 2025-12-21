@@ -47,6 +47,11 @@ switch ($route) {
         (new ArticlePage($twig))->index($id);
         break;
 
+    case 'usersList' :
+        require_once 'app/controllers/UsersListController.php';
+        (new UsersListController($twig))->index();
+        break;
+
     case 'home':
     
     default:

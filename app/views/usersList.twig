@@ -1,0 +1,29 @@
+{% extends "head.twig" %} {% block stylesheets %}
+<link rel="stylesheet" href="static/css/usersList.css" />
+{% endblock %} {% block content %}
+<table class="table table-striped table-hover table-bordered">
+	<thead class="table-primary text-center">
+		<th scope="col">Email</th>
+		<th scope="col">Pseudo</th>
+		<th scope="col">Role</th>
+		<th scope="3-col" colspan="2">Actions</th>
+	</thead>
+	<tbody>
+		{% for user in usersList %}
+		<tr>
+			<td>{{ user.email }}</td>
+			<td>{{ user.nom_utilisateur }}</td>
+			<td>{{ user.nom_role }}</td>
+			<td>
+				<button class="btn btn-outline-danger">
+					Supprimer utilisateur
+				</button>
+			</td>
+			<td>
+				<button class="btn btn-outline-success">Modifier roles</button>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

@@ -51,7 +51,7 @@ class User
         return false;
     }
     
-    public function role($id){
+    public function roles($id){
         $pdo = Database::getInstance()->getConnection();
 
         $sql = "SELECT nom_role FROM roles
@@ -65,6 +65,21 @@ class User
 
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+    }
+
+    public function users_list_with_roles(){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT roles.nom_role, utilisateurs.id, utilisateurs.nom_utilisateur, utilisateurs.email FROM roles
+        JOIN role_user ON role_user.role_id = roles.id
+        JOIN utilisateurs ON utilisateurs.id = role_user.user_id
+        ORDER BY utilisateurs.id;";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
     }
 }

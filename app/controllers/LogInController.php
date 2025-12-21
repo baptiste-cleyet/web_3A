@@ -24,10 +24,10 @@ class LoginController {
 
                 if ($user) {
                     if ($userModel->verify_password($email, $password)){
-                        $role = $userModel->role($user["id"]);
+                        $roles = $userModel->roles($user["id"]);
 
                         SessionManager::getInstance()->set('username', $user['nom_utilisateur']);
-                        SessionManager::getInstance()->set("role", $role);
+                        SessionManager::getInstance()->set("roles", $roles);
                         SessionManager::getInstance()->set("user_id", $user["id"]);
                         header('Location: app.php?route=articlesList');
                         exit;
