@@ -5,7 +5,7 @@
 	<thead class="table-primary text-center">
 		<th scope="col">Email</th>
 		<th scope="col">Pseudo</th>
-		<th scope="col">Role</th>
+		<th scope="col">Roles</th>
 		<th scope="3-col" colspan="2">Actions</th>
 	</thead>
 	<tbody>
@@ -13,11 +13,15 @@
 		<tr>
 			<td>{{ user.email }}</td>
 			<td>{{ user.nom_utilisateur }}</td>
-			<td>{{ user.nom_role }}</td>
 			<td>
-				<button class="btn btn-outline-danger">
-					Supprimer utilisateur
-				</button>
+				{{ user.nom_roles|join(', ') }}
+			</td>
+			<td>
+				<a
+					href="app.php?action=delete&delete_id={{ user.id }}"
+					class="btn btn-outline-danger"
+					>Supprimer utilisateur</a
+				>
 			</td>
 			<td>
 				<button class="btn btn-outline-success">Modifier roles</button>

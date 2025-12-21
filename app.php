@@ -1,23 +1,22 @@
-<?php 
+<?php
 
 use Twig\Extra\Markdown\ErusevMarkdown;
 use Twig\Extra\Markdown\MarkdownExtension;
 use Twig\Extra\Markdown\MarkdownRuntime;
 use Twig\RuntimeLoader\FactoryRuntimeLoader;
 
- /* inclure l'autoloader */ 
+/* inclure l'autoloader */
 require_once 'vendor/autoload.php';
 
-
-/* templates chargés à partir du système de fichiers (répertoire vue) */ 
+/* templates chargés à partir du système de fichiers (répertoire vue) */
 $loader = new Twig\Loader\FilesystemLoader('app/views');
 
-$twig = new \Twig\Environment($loader, ['cache' => false]);
+$twig = new Twig\Environment($loader, ['cache' => false]);
 
 $twig->addExtension(new MarkdownExtension());
 
 $twig->addRuntimeLoader(new FactoryRuntimeLoader([
-    MarkdownRuntime::class => function() {
+    MarkdownRuntime::class => function () {
         return new MarkdownRuntime(new ErusevMarkdown());
     },
 ]));
@@ -29,12 +28,12 @@ switch ($route) {
         require_once 'app/controllers/RegisterController.php';
         (new RegisterController($twig))->index();
         break;
-    
+
     case 'login':
         require_once 'app/controllers/LoginController.php';
         (new LoginController($twig))->index();
         break;
-        
+
     case 'articlesList':
         require_once 'app/controllers/ArticlesListController.php';
         (new ArticlesListController($twig))->index();
@@ -53,16 +52,30 @@ switch ($route) {
         break;
 
     case 'home':
-    
+        break;
+
     default:
         echo $twig->render('login.twig');
         break;
 }
 
-/* options : prod = cache dans le répertoire cache, dev = pas de cache */ 
-$options_prod = array('cache' => 'cache', 'autoescape' => true); 
-$options_dev = array('cache' => false, 'autoescape' => true); 
+$action = $_GET['action'] ?? '';
 
-/* stocker la configuration */ 
-$twig = new Twig\Environment($loader); 
+switch ($action) {
+    case 'delete':
+        require_once 'app/controllers/ActionsController.php';
+        $delete_id = $_GET['delete_id'];
+        (new ActionsController())->deleteUser($delete_id);
+        header('Location: app.php?route=usersList');
+        break;
 
+    default:
+        break;
+}
+
+/* options : prod = cache dans le répertoire cache, dev = pas de cache */
+$options_prod = ['cache' => 'cache', 'autoescape' => true];
+$options_dev = ['cache' => false, 'autoescape' => true];
+
+/* stocker la configuration */
+$twig = new Twig\Environment($loader);

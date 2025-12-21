@@ -1,16 +1,18 @@
 <?php
 
-require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/SessionManager.php';
-class LoginController {
+require_once __DIR__.'/../models/User.php';
+require_once __DIR__.'/SessionManager.php';
+class LoginController
+{
     private $twig;
 
-    public function __construct($twig) {
+    public function __construct($twig)
+    {
         $this->twig = $twig;
     }
 
-    public function index() {
-
+    public function index()
+    {
         $error = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,27 +25,26 @@ class LoginController {
                 $user = $userModel->find_by_email($email);
 
                 if ($user) {
-                    if ($userModel->verify_password($email, $password)){
-                        $roles = $userModel->roles($user["id"]);
+                    if ($userModel->verify_password($email, $password)) {
+                        $roles = $userModel->roles($user['id']);
 
                         SessionManager::getInstance()->set('username', $user['nom_utilisateur']);
-                        SessionManager::getInstance()->set("roles", $roles);
-                        SessionManager::getInstance()->set("user_id", $user["id"]);
+                        SessionManager::getInstance()->set('roles', $roles);
+                        SessionManager::getInstance()->set('user_id', $user['id']);
                         header('Location: app.php?route=articlesList');
                         exit;
                     } else {
-                        $error = "mot de passe incorrect";
+                        $error = 'mot de passe incorrect';
                     }
                 } else {
                     $error = "Le compte n'existe pas";
                 }
             } else {
-                $error = "Veuillez renseigner tous les champs.";
+                $error = 'Veuillez renseigner tous les champs.';
             }
-
         }
         echo $this->twig->render('login.twig', [
-            'error' => $error
+            'error' => $error,
         ]);
     }
 }
