@@ -253,12 +253,12 @@ VALUES
         1,
         'Top 5 des Traces VTT Enduro en Rhône-Alpes',
         'top-5-traces-vtt-enduro-rhone-alpes',
-        '#
-Introduction
-Découvrez les descentes les plus mythiques pour les amateurs d\'**Enduro** en France. Freins
+        "
+# Introduction
+Découvrez les descentes les plus mythiques pour les amateurs d'**Enduro** en France. Freins
 puissants et protections obligatoires !
-## La piste de l\'Écureuil
-Une trace rapide avec de gros dénivelés négatifs. Idéale pour tester votre **suspension**.',
+## La piste de l'Écureuil
+Une trace rapide avec de gros dénivelés négatifs. Idéale pour tester votre **suspension**.",
         'Publié'
     ),
     (
@@ -266,9 +266,9 @@ Une trace rapide avec de gros dénivelés négatifs. Idéale pour tester votre *
         2,
         'Réglage de la suspension : le SAG parfait pour le XC',
         'reglage-suspension-sag-xc',
-        'Le **SAG**
+        "Le **SAG**
 (Sinking At Ground) est crucial en **XC** pour optimiser le rendement et le confort. Nous détaillons
-ici le processus étape par étape. Un mauvais réglage impacte directement la performance.',
+ici le processus étape par étape. Un mauvais réglage impacte directement la performance.",
         'Publié'
     ),
     (
@@ -276,9 +276,9 @@ ici le processus étape par étape. Un mauvais réglage impacte directement la p
         3,
         "Gérer l'Hydratation sur une longue sortie VTT",
         'gerer-hydratation-longue-sortie',
-        'Au-delà de
-3h, l\'eau seule ne suffit plus. Il faut intégrer des électrolytes et des glucides. Notre guide complet sur
-la **Nutrition** et l\'**Hydratation**.',
+        "Au-delà de
+3h, l'eau seule ne suffit plus. Il faut intégrer des électrolytes et des glucides. Notre guide complet sur
+la **Nutrition** et l'**Hydratation**.",
         'Brouillon'
     );
 

@@ -2,6 +2,7 @@
 
 
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/UserRole.php';
 require_once __DIR__ . '/SessionManager.php';
 
 class RegisterController {
@@ -28,7 +29,10 @@ class RegisterController {
                 if ($password1 === $password2) {
                     $userModel = new User();
 
+
                     if ($userModel->register($nom, $email, $password1)) {
+                        $userRoleModel = new UserRole();
+                        $userRoleModel->setContributor($nom);
                         $session = SessionManager::getInstance();
                         $session->set('user_name', $nom);
                         header('Location: app.php?route=login&success=1');

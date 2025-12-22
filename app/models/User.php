@@ -32,6 +32,16 @@ class User
         }
     }
 
+    public function getId($username){
+        $pdo = DataBase::getInstance()->getConnection();
+
+        $sql = 'SELECT id FROM Utilisateurs WHERE nom_utilisateur = :username';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':username' => $username]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function find_by_email($email)
     {
         $pdo = Database::getInstance()->getConnection();
