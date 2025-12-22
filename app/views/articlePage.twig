@@ -20,8 +20,9 @@
 		<br />
 		<hr />
 		<h6>Tags</h6>
-		{% for tag in tags %}
-		{{ tag.nom_tag }} - {% endfor %}
+		{% set tags_names = [] %} {% for tag in tags %} {% set tags_names =
+		tags_names|merge([tag.nom_tag]) %} {% endfor %}
+		{{ tags_names|join(' - ') }}
 	</div>
 </div>
 {% endblock content %}

@@ -2,6 +2,7 @@
 
 require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/User.php';
+require_once __DIR__.'/../models/Role.php';
 class UsersListController
 {
     private $twig;
@@ -14,9 +15,10 @@ class UsersListController
 
     public function index()
     {
-        $userModel = new User();
-        $usersList = $userModel->users_list_with_roles();
-        $rolesList = $userModel->roles_list();
+        $roleModel = new Role();
+
+        $usersList = $roleModel->users_list_with_roles();
+        $rolesList = $roleModel->roles_list();
 
         echo $this->twig->render('usersList.twig', [
             'usersList' => $usersList,

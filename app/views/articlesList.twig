@@ -15,14 +15,14 @@
 		<div class="text-center pt-2">
 			<h2>Bienvenue {{ username }} !</h2>
 		</div>
-		{% for role in roles %} {% if role.nom_role == "Administrateur" %}
+		{% if userGestion %}
 		<a
 			type="button"
 			class="btn btn-outline-primary"
 			href="app.php?route=usersList"
-			>Gestion des utilisateurs</a
-		>
-		{% endif %} {% endfor %} {% else %}
+			>Gestion des utilisateurs
+		</a>
+		{% endif %} {% else %}
 		<div class="text-center pt-2"><h2>Bienvenue invité !</h2></div>
 		{% endif %}
 	</header>

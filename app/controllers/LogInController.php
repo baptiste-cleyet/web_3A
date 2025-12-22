@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__.'/../models/User.php';
+require_once __DIR__.'/../models/Role.php';
 require_once __DIR__.'/SessionManager.php';
 class LoginController
 {
@@ -20,13 +21,14 @@ class LoginController
             $password = $_POST['password'] ?? '';
 
             $userModel = new User();
+            $roleModel = new Role();
 
             if ($email && $password) {
                 $user = $userModel->find_by_email($email);
 
                 if ($user) {
                     if ($userModel->verify_password($email, $password)) {
-                        $roles = $userModel->roles($user['id']);
+                        $roles = $roleModel->user_roles($user['id']);
 
                         SessionManager::getInstance()->set('username', $user['nom_utilisateur']);
                         SessionManager::getInstance()->set('roles', $roles);

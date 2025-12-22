@@ -10,7 +10,7 @@
 			<th scope="col">Email</th>
 			<th scope="col">Pseudo</th>
 			<th scope="col">Roles</th>
-			<th scope="3-col" colspan="2">Actions</th>
+			<th scope="col" colspan="2">Actions</th>
 		</thead>
 		<tbody>
 			{% for user in usersList %}
@@ -26,8 +26,8 @@
 						x-on:click="deleteUrl = &quot;app.php?action=delete&delete_id={{
 							user.id
 						}}&quot;; openDelete = true"
-						>Supprimer utilisateur</a
-					>
+						>Supprimer utilisateur
+					</a>
 				</td>
 				<td>
 					<a
