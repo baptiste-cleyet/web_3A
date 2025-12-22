@@ -16,10 +16,12 @@ class UsersListController
     {
         $userModel = new User();
         $usersList = $userModel->users_list_with_roles();
+        $rolesList = $userModel->roles_list();
 
         echo $this->twig->render('usersList.twig', [
             'usersList' => $usersList,
             'titre_doc' => 'Gestion des utilisateurs',
+            'rolesList' => $rolesList,
         ]);
     }
 }

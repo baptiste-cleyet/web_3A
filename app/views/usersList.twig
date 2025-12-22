@@ -1,7 +1,10 @@
 {% extends "head.twig" %} {% block stylesheets %}
 <link rel="stylesheet" href="static/css/usersList.css" />
 {% endblock %} {% block content %}
-<div x-data="{ open: false, targetUrl: '' }" x-cloak>
+<div
+	x-data="{ openDelete: false, deleteUrl: '', openUpdateRoles: false, userUpdateId: null, userRoles: [] }"
+	x-cloak
+>
 	<table class="table table-striped table-hover table-bordered">
 		<thead class="table-primary text-center">
 			<th scope="col">Email</th>
@@ -20,40 +23,111 @@
 				<td>
 					<a
 						class="btn btn-outline-danger"
-						x-on:click="targetUrl = 'app.php?action=delete&delete_id={{
+						x-on:click="deleteUrl = &quot;app.php?action=delete&delete_id={{
 							user.id
-						}}'; open = true"
+						}}&quot;; openDelete = true"
 						>Supprimer utilisateur</a
 					>
 				</td>
 				<td>
-					<button class="btn btn-outline-primary">
+					<a
+						class="btn btn-outline-primary"
+						x-on:click="userUpdateId = {{ user.id }};
+						userRoles = {{ user.nom_roles | json_encode | escape('html_attr') }}; 
+						openUpdateRoles = true"
+					>
 						Modifier roles
-					</button>
+					</a>
 				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 
-	<div class="modal" x-show="open">
-		<div @click.away="open = false" class="confirm">
+	<div class="modal" x-show="openDelete">
+		<div @click.away="openDelete = false" class="confirm">
 			<h3>Confirmation</h3>
 			<p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+			<span x-text="openDelete"></span>
 
 			<div class="confirm-buttons">
-				<button @click="open = false" class="btn btn-secondary">
+				<button @click="openDelete = false" class="btn btn-secondary">
 					Annuler
 				</button>
 
 				{# Le clic final redirige vers l'action PHP du contrôleur #}
 				<button
-					@click="window.location.href = targetUrl"
+					@click="window.location.href = deleteUrl"
 					class="btn btn-danger"
 				>
 					Confirmer la suppression
 				</button>
 			</div>
+		</div>
+	</div>
+
+	<div class="modal" x-show="openUpdateRoles">
+		<div @click.away="openUpdateRoles = false" class="confirm">
+			<h3>Choix des roles</h3>
+
+			<form action="app.php?action=updateRoles" method="POST">
+				<input type="hidden" :value="userUpdateId" name="id" />
+				{% for role in rolesList %}
+				<div class="form-check">
+					<template x-if="userRoles.includes('{{ role.nom_role }}')">
+						<input
+							class="form-check-input"
+							type="checkbox"
+							value="{{ true }}"
+							id="{{ role.nom_role }}"
+							name="{{ role.nom_role }}"
+							checked
+						/>
+					</template>
+					<template x-if="!userRoles.includes('{{ role.nom_role }}')">
+						<input
+							class="form-check-input"
+							type="checkbox"
+							value="{{ true }}"
+							id="{{ role.nom_role }}"
+							name="{{ role.nom_role }}"
+						/>
+					</template>
+					{# {% if role.nom_role in user.nom_roles %}
+					<input
+						class="form-check-input"
+						type="checkbox"
+						value=""
+						id="{{ role.nom_role }}"
+						checked
+					/>
+					{% else %}
+					<input
+						class="form-check-input"
+						type="checkbox"
+						value=""
+						id="{{ role }}"
+					/>
+					{% endif %} #}
+					<label class="form-check-label" for="checkDefault">
+						{{ role.nom_role }}
+					</label>
+				</div>
+				{% endfor %}
+				<div class="confirm-buttons">
+					<button
+						@click="openUpdateRoles = false"
+						class="btn btn-secondary"
+					>
+						Annuler
+					</button>
+
+					{# Le clic final redirige vers l'action PHP du contrôleur #}
+					<button type="submit" class="btn btn-primary">
+						Confirmer la modification
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

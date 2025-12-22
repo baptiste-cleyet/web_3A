@@ -22,4 +22,18 @@ class ActionsController
 
         return $userModel->delete_user($id);
     }
+
+    public function updateRoles()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            $contributeur = $_POST['Contributeur'] ?? false;
+            $administrateur = $_POST['Administrateur'] ?? false;
+            $editeur = $_POST['Éditeur'] ?? false;
+
+            $userModel = new User();
+
+            $userModel->update_roles($id, $administrateur, $contributeur, $editeur);
+        }
+    }
 }

@@ -143,4 +143,77 @@ class User
             return false;
         }
     }
+
+    public function roles_list()
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = 'SELECT nom_role FROM roles;';
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function update_roles($id, $admin, $contrib, $edit)
+    {
+        $this->delete_all_roles($id);
+        if ($admin) {
+            $this->add_role($id, 1);
+        }
+        if ($edit) {
+            $this->add_role($id, 2);
+        }
+        if ($contrib) {
+            $this->add_role($id, 3);
+        }
+    }
+
+    private function add_role($user_id, $role_id)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = 'INSERT INTO role_user (user_id, role_id) VALUES(:user_id, :role_id)';
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return true;
+        } catch (PDOException $e) {
+            $errorMessage = 'ERREUR ajout de rôle - Raison SQL: '.$e->getMessage();
+            Logger::getInstance()->log($errorMessage);
+
+            return false;
+        }
+    }
+
+    private function delete_all_roles($id)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = 'DELETE FROM role_user
+        WHERE user_id = :id;';
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return true;
+        } catch (PDOException $e) {
+            $errorMessage = 'ERREUR supression de rôle - Raison SQL: '.$e->getMessage();
+            Logger::getInstance()->log($errorMessage);
+
+            return false;
+        }
+    }
 }

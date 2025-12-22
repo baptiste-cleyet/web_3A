@@ -70,6 +70,13 @@ switch ($action) {
         header('Location: app.php?route=usersList');
         break;
 
+    case 'updateRoles':
+        require_once 'app/controllers/ActionsController.php';
+        $delete_id = $_GET['delete_id'];
+        (new ActionsController())->updateRoles();
+        header('Location: app.php?route=usersList');
+        break;
+
     default:
         break;
 }
