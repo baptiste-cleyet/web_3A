@@ -52,6 +52,7 @@ switch ($route) {
         break;
 
     case 'home':
+        echo $twig->render('login.twig');
         break;
 
     default:

@@ -1,33 +1,61 @@
 {% extends "head.twig" %} {% block stylesheets %}
 <link rel="stylesheet" href="static/css/usersList.css" />
 {% endblock %} {% block content %}
-<table class="table table-striped table-hover table-bordered">
-	<thead class="table-primary text-center">
-		<th scope="col">Email</th>
-		<th scope="col">Pseudo</th>
-		<th scope="col">Roles</th>
-		<th scope="3-col" colspan="2">Actions</th>
-	</thead>
-	<tbody>
-		{% for user in usersList %}
-		<tr>
-			<td>{{ user.email }}</td>
-			<td>{{ user.nom_utilisateur }}</td>
-			<td>
-				{{ user.nom_roles|join(', ') }}
-			</td>
-			<td>
-				<a
-					href="app.php?action=delete&delete_id={{ user.id }}"
-					class="btn btn-outline-danger"
-					>Supprimer utilisateur</a
+<div x-data="{ open: false, targetUrl: '' }" x-cloak>
+	<table class="table table-striped table-hover table-bordered">
+		<thead class="table-primary text-center">
+			<th scope="col">Email</th>
+			<th scope="col">Pseudo</th>
+			<th scope="col">Roles</th>
+			<th scope="3-col" colspan="2">Actions</th>
+		</thead>
+		<tbody>
+			{% for user in usersList %}
+			<tr>
+				<td>{{ user.email }}</td>
+				<td>{{ user.nom_utilisateur }}</td>
+				<td>
+					{{ user.nom_roles|join(', ') }}
+				</td>
+				<td>
+					<a
+						class="btn btn-outline-danger"
+						x-on:click="targetUrl = 'app.php?action=delete&delete_id={{
+							user.id
+						}}'; open = true"
+						>Supprimer utilisateur</a
+					>
+				</td>
+				<td>
+					<button class="btn btn-outline-primary">
+						Modifier roles
+					</button>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="modal" x-show="open">
+		<div @click.away="open = false" class="confirm">
+			<h3>Confirmation</h3>
+			<p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+
+			<div class="confirm-buttons">
+				<button @click="open = false" class="btn btn-secondary">
+					Annuler
+				</button>
+
+				{# Le clic final redirige vers l'action PHP du contrôleur #}
+				<button
+					@click="window.location.href = targetUrl"
+					class="btn btn-danger"
 				>
-			</td>
-			<td>
-				<button class="btn btn-outline-success">Modifier roles</button>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+					Confirmer la suppression
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock %}
