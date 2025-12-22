@@ -2,11 +2,12 @@
 <link rel="stylesheet" href="static/css/articlePage.css" />
 {% endblock stylesheets %} {% block content %}
 <div class="blog-post">
-	<h2 class="blog-post-title">{{ article.titre }}</h2>
+	<h1 class="blog-post-title">{{ article.titre }}</h1>
 	<p class="blog-post-meta">
-		{{ article.date_creation }} par {{ auteur.nom_utilisateur }}
+		Créé le {{ article.date_creation|date("m/d/Y") }} par
+		{{ auteur.nom_utilisateur }}
 
-		<br />Mis à jour le {{ article.date_mise_a_jour }}
+		<br />Mis à jour le {{ article.date_mise_a_jour|date("m/d/Y") }}
 	</p>
 
 	<p>
@@ -16,13 +17,45 @@
 	</p>
 
 	<div>
-		<br />
-		<br />
 		<hr />
-		<h6>Tags</h6>
+		<h4>Tags</h4>
 		{% set tags_names = [] %} {% for tag in tags %} {% set tags_names =
 		tags_names|merge([tag.nom_tag]) %} {% endfor %}
 		{{ tags_names|join(' - ') }}
+	</div>
+
+	<br />
+	<hr />
+	<h3 class="text-center">Commentaires</h3>
+	<div class="m-5">
+		<div class="border p-2">
+			<h5>
+				<strong>
+					<i class="bi bi-person-circle"></i> Nom de l'auteur
+				</strong>
+			</h5>
+			<span class="blog-post-meta">
+				<small>
+					<i class="bi bi-calendar-date-fill"></i> 01/01/2000
+				</small>
+			</span>
+			<p>
+				Contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu contenu contenu contenu
+				contenu contenu contenu contenu contenu
+			</p>
+		</div>
 	</div>
 </div>
 {% endblock content %}
