@@ -1,10 +1,12 @@
 <?php
-require_once __DIR__ . '/../controllers/DataBase.php';
-require_once __DIR__ . '/../controllers/Logger.php';
+
+require_once __DIR__.'/../controllers/DataBase.php';
+require_once __DIR__.'/../controllers/Logger.php';
 
 class Article
 {
-    public function lastArticles($nbArticles){
+    public function lastArticles($nbArticles)
+    {
         $pdo = Database::getInstance()->getConnection();
 
         $sql = "SELECT * FROM `articles`
@@ -18,55 +20,76 @@ class Article
 
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function articleById($id){
+    public function articleById($id)
+    {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "SELECT * FROM `articles`
-        WHERE id = :id";
-        
+        $sql = 'SELECT * FROM `articles`
+        WHERE id = :id';
+
         $stmt = $pdo->prepare($sql);
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function articleAuthor($id) {
+    public function articleAuthor($id)
+    {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "SELECT nom_utilisateur
+        $sql = 'SELECT nom_utilisateur
         FROM utilisateurs
         JOIN articles ON articles.utilisateur_id = utilisateurs.id
-        WHERE articles.id = :id;";
-        
+        WHERE articles.id = :id;';
+
         $stmt = $pdo->prepare($sql);
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC); 
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function articleTags($id){
+    public function articleTags($id)
+    {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "SELECT nom_tag FROM tags
+        $sql = 'SELECT nom_tag FROM tags
         JOIN article_tag ON article_tag.tag_id = tags.id
         JOIN articles ON articles.id = article_tag.article_id
-        WHERE articles.id = :id;";
-        
+        WHERE articles.id = :id;';
+
         $stmt = $pdo->prepare($sql);
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function articleComments($id)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT commentaires.contenu, commentaires.date_commentaire, commentaires.nom_auteur
+        FROM `commentaires`
+        JOIN articles ON articles.id = commentaires.article_id
+        WHERE articles.id = :id AND commentaires.statut = 'Approuvé';";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
