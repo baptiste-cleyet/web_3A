@@ -11,7 +11,7 @@ class ArticlePage
         $this->twig = $twig;
     }
 
-    public function index($id)
+    public function index($id, $error, $addComment)
     {
         $articlesModel = new Article();
 
@@ -20,12 +20,17 @@ class ArticlePage
         $tags = $articlesModel->articleTags($id);
         $comments = $articlesModel->articleComments($id);
 
+        $user = SessionManager::getInstance()->get('user');
+
         echo $this->twig->render('articlePage.twig', [
             'titre_doc' => $article['titre'],
             'article' => $article,
             'auteur' => $author,
             'tags' => $tags,
             'comments' => $comments,
+            'user' => $user,
+            'error' => $error,
+            'addComment' => $addComment,
         ]);
     }
 }

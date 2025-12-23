@@ -48,7 +48,6 @@
 		<div @click.away="openDelete = false" class="confirm">
 			<h3>Confirmation</h3>
 			<p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
-			<span x-text="openDelete"></span>
 
 			<div class="confirm-buttons">
 				<button @click="openDelete = false" class="btn btn-secondary">
@@ -93,22 +92,6 @@
 							name="{{ role.nom_role }}"
 						/>
 					</template>
-					{# {% if role.nom_role in user.nom_roles %}
-					<input
-						class="form-check-input"
-						type="checkbox"
-						value=""
-						id="{{ role.nom_role }}"
-						checked
-					/>
-					{% else %}
-					<input
-						class="form-check-input"
-						type="checkbox"
-						value=""
-						id="{{ role }}"
-					/>
-					{% endif %} #}
 					<label class="form-check-label" for="checkDefault">
 						{{ role.nom_role }}
 					</label>

@@ -92,4 +92,27 @@ class Article
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function addComment($article_id, $email, $nom, $contenu)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = 'INSERT INTO commentaires (article_id, contenu, email_auteur, nom_auteur) 
+        VALUES (:article_id, :contenu, :email, :nom);';
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':article_id' => $article_id,
+                ':contenu' => $contenu,
+                ':email' => $email,
+                ':nom' => $nom,
+            ]);
+
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }

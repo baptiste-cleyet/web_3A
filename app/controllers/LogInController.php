@@ -33,6 +33,8 @@ class LoginController
                         SessionManager::getInstance()->set('username', $user['nom_utilisateur']);
                         SessionManager::getInstance()->set('roles', $roles);
                         SessionManager::getInstance()->set('user_id', $user['id']);
+                        SessionManager::getInstance()->set('user', $user);
+
                         header('Location: app.php?route=articlesList');
                         exit;
                     } else {

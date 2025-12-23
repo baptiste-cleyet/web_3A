@@ -1,7 +1,28 @@
 {% extends "head.twig" %} {% block stylesheets %}
 <link rel="stylesheet" href="static/css/articlePage.css" />
-{% endblock stylesheets %} {% block content %}
-<div class="blog-post">
+{% endblock stylesheets %} {% block content %} {% if error %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+	<i class="bi bi-exclamation-triangle"></i> Le commentaire ne s'est pas
+	ajouté !
+	<button
+		type="button"
+		class="btn-close"
+		href="app.php?route=article&id={{ article.id }}"
+	></button>
+</div>
+{% endif %} {% if addComment %}
+<div class="alert alert-success alert-dismissible" role="alert">
+	<i class="bi bi-info-circle"></i> Le commentaire est désormais en attente de
+	validation.
+	<a
+		type="button"
+		class="btn-close"
+		href="app.php?route=article&id={{ article.id }}"
+	></a>
+</div>
+{% endif %}
+
+<div class="blog-post" x-data="{ openAddComment: false }" x-cloak>
 	<h1 class="blog-post-title">{{ article.titre }}</h1>
 	<p class="blog-post-meta">
 		Créé le {{ article.date_creation|date("d/m/Y") }} par
@@ -27,10 +48,17 @@
 	<br />
 	<hr />
 	<h3 class="text-center"><i class="bi bi-chat-text"></i> Commentaires</h3>
+
+	<div class="text-center">
+		<button class="btn btn-primary" @click="openAddComment = true">
+			<i class="bi bi-plus-square"></i> Ajouter un commentaire
+		</button>
+	</div>
+
 	<div class="m-5">
 		{% for comment in comments %}
 		<div
-			class="perso-border border rounded border-1 border-primary border-opacity-50 p-2"
+			class="border rounded border-1 border-primary border-opacity-50 p-2 mb-2"
 		>
 			<h5>
 				<strong>
@@ -49,5 +77,84 @@
 		</div>
 		{% endfor %}
 	</div>
+
+	<div class="modal" x-show="openAddComment" style="display: block" x-cloak>
+		<div @click.away="openAddComment = false" class="confirm">
+			<h3>Nouveau commentaire</h3>
+
+			<form action="app.php?action=addComment" method="POST">
+				<input type="hidden" value="{{ article.id }}" name="id" />
+				{% if user == null %}
+
+				<div class="mb-3">
+					<label for="pseudo" class="form-label">Pseudo</label>
+					<input
+						type="text"
+						class="form-control"
+						id="pseudo"
+						name="pseudo"
+						placeholder="Votre pseudo"
+						required
+					/>
+				</div>
+
+				<div class="mb-3">
+					<label for="mail" class="form-label">Adresse mail</label>
+					<input
+						type="email"
+						class="form-control"
+						id="mail"
+						name="mail"
+						placeholder="name@example.com"
+						required
+					/>
+				</div>
+
+				{% else %}
+
+				<input
+					type="hidden"
+					value="{{ user.email }}"
+					id="mail"
+					name="mail"
+				/>
+				<input
+					type="hidden"
+					value="{{ user.nom_utilisateur }}"
+					id="pseudo"
+					name="pseudo"
+				/>
+
+				{% endif %}
+
+				<div class="mb-3">
+					<label for="commentContent" class="form-label"
+						>Commentaire</label
+					>
+					<textarea
+						class="form-control"
+						id="commentContent"
+						name="commentContent"
+						rows="4"
+					></textarea>
+				</div>
+
+				<div class="confirm-buttons">
+					<button
+						@click="openAddComment = false"
+						class="btn btn-secondary"
+					>
+						Annuler
+					</button>
+
+					{# Le clic final redirige vers l'action PHP du contrôleur #}
+					<button type="submit" class="btn btn-success">
+						Envoyer le commentaire
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
+
 {% endblock content %}

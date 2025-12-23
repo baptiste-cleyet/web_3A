@@ -4,6 +4,7 @@ require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/User.php';
 require_once __DIR__.'/../models/Role.php';
 require_once __DIR__.'/../models/Permission.php';
+require_once __DIR__.'/../models/Article.php';
 
 class ActionsController
 {
@@ -31,5 +32,21 @@ class ActionsController
 
             $roleModel->update_roles($id, $administrateur, $contributeur, $editeur);
         }
+    }
+
+    public function addComment()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            $pseudo = $_POST['pseudo'] ?? '';
+            $mail = $_POST['mail'] ?? '';
+            $commentContent = $_POST['commentContent'] ?? '';
+
+            $articleModel = new Article();
+
+            $success = $articleModel->addComment($id, $mail, $pseudo, $commentContent);
+        }
+
+        return [$id, $success];
     }
 }

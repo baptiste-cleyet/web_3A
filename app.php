@@ -41,9 +41,11 @@ switch ($route) {
 
     case 'article':
         $id = $_GET['id'];
+        $error = $_GET['commentError'] ?? false;
+        $addComment = $_GET['addComment'] ?? false;
 
         require_once 'app/controllers/ArticlePage.php';
-        (new ArticlePage($twig))->index($id);
+        (new ArticlePage($twig))->index($id, $error, $addComment);
         break;
 
     case 'usersList' :
@@ -72,9 +74,16 @@ switch ($action) {
 
     case 'updateRoles':
         require_once 'app/controllers/ActionsController.php';
-        $delete_id = $_GET['delete_id'];
         (new ActionsController())->updateRoles();
         header('Location: app.php?route=usersList');
+        break;
+
+    case 'addComment' :
+        require_once 'app/controllers/ActionsController.php';
+        $var = (new ActionsController())->addComment();
+        $id = $var[0];
+        $error = !$var[1];
+        header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
         break;
 
     default:
