@@ -2,12 +2,14 @@
 
 require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/Article.php';
-class ArticlePage
+require_once __DIR__.'/Controller.php';
+class ArticlePage extends Controller
 {
-    private $twig;
+    protected $twig;
 
     public function __construct($twig)
     {
+        parent::__construct($twig);
         $this->twig = $twig;
     }
 
@@ -28,7 +30,6 @@ class ArticlePage
             'auteur' => $author,
             'tags' => $tags,
             'comments' => $comments,
-            'user' => $user,
             'error' => $error,
             'addComment' => $addComment,
         ]);

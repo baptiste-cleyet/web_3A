@@ -3,12 +3,14 @@
 require_once __DIR__.'/../models/User.php';
 require_once __DIR__.'/../models/Role.php';
 require_once __DIR__.'/SessionManager.php';
-class LoginController
+require_once __DIR__.'/Controller.php';
+class LoginController extends Controller
 {
-    private $twig;
+    protected $twig;
 
     public function __construct($twig)
     {
+        parent::__construct($twig);
         $this->twig = $twig;
     }
 
@@ -30,15 +32,13 @@ class LoginController
                     if ($userModel->verify_password($email, $password)) {
                         $roles = $roleModel->user_roles($user['id']);
 
-                        SessionManager::getInstance()->set('username', $user['nom_utilisateur']);
                         SessionManager::getInstance()->set('roles', $roles);
-                        SessionManager::getInstance()->set('user_id', $user['id']);
                         SessionManager::getInstance()->set('user', $user);
 
                         header('Location: app.php?route=articlesList');
                         exit;
                     } else {
-                        $error = 'mot de passe incorrect';
+                        $error = 'Mot de passe incorrect';
                     }
                 } else {
                     $error = "Le compte n'existe pas";

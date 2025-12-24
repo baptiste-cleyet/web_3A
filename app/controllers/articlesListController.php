@@ -3,12 +3,14 @@
 require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/Article.php';
 require_once __DIR__.'/../models/Permission.php';
-class ArticlesListController
+require_once __DIR__.'/Controller.php';
+class ArticlesListController extends Controller
 {
-    private $twig;
+    protected $twig;
 
     public function __construct($twig)
     {
+        parent::__construct($twig);
         $this->twig = $twig;
     }
 
@@ -26,11 +28,9 @@ class ArticlesListController
         $userGestion = $permissionModel->checkPermission($id, 'utilisateur_gerer');
 
         echo $this->twig->render('articlesList.twig', [
-            'username' => $username,
-            'roles' => $roles,
-            'userGestion' => $userGestion,
-            'articlesList' => $articlesList,
             'titre_doc' => 'Articles récents',
+            'currentPage' => 'articlesList.twig',
+            'articlesList' => $articlesList,
         ]);
     }
 }

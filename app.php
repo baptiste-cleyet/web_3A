@@ -44,7 +44,7 @@ switch ($route) {
         $error = $_GET['commentError'] ?? false;
         $addComment = $_GET['addComment'] ?? false;
 
-        require_once 'app/controllers/ArticlePage.php';
+        require_once 'app/controllers/ArticlePageController.php';
         (new ArticlePage($twig))->index($id, $error, $addComment);
         break;
 
@@ -84,6 +84,12 @@ switch ($action) {
         $id = $var[0];
         $error = !$var[1];
         header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
+        break;
+
+    case 'disconnect' :
+        require_once 'app/controllers/ActionsController.php';
+        (new ActionsController())->disconnect();
+        header('Location: app.php?route=articlesList');
         break;
 
     default:

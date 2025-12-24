@@ -49,4 +49,9 @@ class ActionsController
 
         return [$id, $success];
     }
+
+    public function disconnect()
+    {
+        SessionManager::getInstance()->destroy();
+    }
 }

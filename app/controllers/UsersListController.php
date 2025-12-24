@@ -3,13 +3,15 @@
 require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/User.php';
 require_once __DIR__.'/../models/Role.php';
-class UsersListController
+require_once __DIR__.'/Controller.php';
+class UsersListController extends Controller
 {
-    private $twig;
+    protected $twig;
 
     // Constructeur
     public function __construct($twig)
     {
+        parent::__construct($twig);
         $this->twig = $twig;
     }
 
@@ -21,8 +23,9 @@ class UsersListController
         $rolesList = $roleModel->roles_list();
 
         echo $this->twig->render('usersList.twig', [
-            'usersList' => $usersList,
+            'currentPage' => 'usersList.twig',
             'titre_doc' => 'Gestion des utilisateurs',
+            'usersList' => $usersList,
             'rolesList' => $rolesList,
         ]);
     }
