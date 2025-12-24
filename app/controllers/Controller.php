@@ -16,9 +16,11 @@ abstract class Controller
 
         if ($user == null) {
             $userGestion = false;
+            $commentGestion = false;
         } else {
             $permissionModel = new Permission();
             $userGestion = $permissionModel->checkPermission($user_id, 'utilisateur_gerer');
+            $commentGestion = $permissionModel->checkPermission($user_id, 'commentaire_gerer');
         }
         $menu = [
             'articlesList' => [
@@ -32,6 +34,12 @@ abstract class Controller
                 'label' => 'Gestion utilisateurs',
                 'disabled' => !$userGestion,
                 'page' => 'usersList.twig',
+            ],
+            'gestionCommentaires' => [
+                'url' => 'app.php?route=manageComments',
+                'label' => 'Gestion commentaires',
+                'disabled' => !$commentGestion,
+                'page' => 'manageComments.twig',
             ],
         ];
         $this->twig->addGlobal('menu', $menu);

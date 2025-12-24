@@ -3,6 +3,13 @@ body {
 	padding-top: 4.5rem;
 }
 
+@media screen and (max-width: 576px) {
+	body {
+		min-height: 150rem;
+		padding-top: 6rem;
+	}
+}
+
 .modal {
 	position: fixed;
 	top: 0;

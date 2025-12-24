@@ -1,161 +1,134 @@
-{% extends "head.twig" %} {% block stylesheets %}
-<link rel="stylesheet" href="static/css/articlePage.css" />
-{% endblock stylesheets %} {% block content %} {% if error %}
-<div class="alert alert-danger alert-dismissible" role="alert">
-	<i class="bi bi-exclamation-triangle"></i> Le commentaire ne s'est pas
-	ajouté !
-	<button
-		type="button"
-		class="btn-close"
-		href="app.php?route=article&id={{ article.id }}"
-	></button>
-</div>
-{% endif %} {% if addComment %}
-<div class="alert alert-success alert-dismissible" role="alert">
-	<i class="bi bi-info-circle"></i> Le commentaire est désormais en attente de
-	validation.
-	<a
-		type="button"
-		class="btn-close"
-		href="app.php?route=article&id={{ article.id }}"
-	></a>
-</div>
-{% endif %}
-
-<div class="blog-post" x-data="{ openAddComment: false }" x-cloak>
-	<h1 class="blog-post-title">{{ article.titre }}</h1>
-	<p class="blog-post-meta">
-		Créé le {{ article.date_creation|date("d/m/Y") }} par
-		{{ auteur.nom_utilisateur }}
-
-		<br />Mis à jour le {{ article.date_mise_a_jour|date("d/m/Y") }}
-	</p>
-
-	<p>
-		{% apply markdown_to_html %}
-		{{ article.contenu }}
-		{% endapply %}
-	</p>
-
-	<div>
-		<hr />
-		<h4><i class="bi bi-tag"></i> Tags</h4>
-		{% set tags_names = [] %} {% for tag in tags %} {% set tags_names =
-		tags_names|merge([tag.nom_tag]) %} {% endfor %}
-		{{ tags_names|join(' - ') }}
-	</div>
-
-	<br />
-	<hr />
-	<h3 class="text-center"><i class="bi bi-chat-text"></i> Commentaires</h3>
-
-	<div class="text-center">
-		<button class="btn btn-primary" @click="openAddComment = true">
-			<i class="bi bi-plus-square"></i> Ajouter un commentaire
-		</button>
-	</div>
-
-	<div class="m-5">
-		{% for comment in comments %}
-		<div
-			class="border rounded border-1 border-primary border-opacity-50 p-2 mb-2"
-		>
-			<h5>
-				<strong>
-					<i class="bi bi-person-circle"></i> {{ comment.nom_auteur }}
-				</strong>
-			</h5>
-			<span class="blog-post-meta">
-				<small>
-					<i class="bi bi-calendar-date-fill"></i>
-					{{ comment.date_commentaire|date("d/m/Y") }}
-				</small>
-			</span>
-			<p>
-				{{ comment.contenu }}
-			</p>
+{% extends "head.twig" %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="static/css/articlePage.css"/>
+{% endblock stylesheets %}
+{% block content %}
+	{% if error %}
+		<div class="alert alert-danger alert-dismissible" role="alert">
+			<i class="bi bi-exclamation-triangle"></i>
+			Le commentaire ne s'est pas
+							ajouté !
+			<button type="button" class="btn-close" href="app.php?route=article&id={{ article.id }}"></button>
 		</div>
-		{% endfor %}
-	</div>
+	{% endif %}
+	{% if addComment %}
+		<div class="alert alert-success alert-dismissible" role="alert">
+			<i class="bi bi-info-circle"></i>
+			Le commentaire est désormais en attente de
+							validation.
+			<a type="button" class="btn-close" href="app.php?route=article&id={{ article.id }}"></a>
+		</div>
+	{% endif %}
 
-	<div class="modal" x-show="openAddComment" style="display: block" x-cloak>
-		<div @click.away="openAddComment = false" class="confirm">
-			<h3>Nouveau commentaire</h3>
+	<div class="blog-post" x-data="{ openAddComment: false }" x-cloak>
+		<h1 class="blog-post-title">{{ article.titre }}</h1>
+		<p class="blog-post-meta">
+			Créé le
+			{{ article.date_creation|date("d/m/Y") }}
+			par
+			{{ auteur.nom_utilisateur }}
 
-			<form action="app.php?action=addComment" method="POST">
-				<input type="hidden" value="{{ article.id }}" name="id" />
-				{% if user == null %}
+			<br/>Mis à jour le
+			{{ article.date_mise_a_jour|date("d/m/Y") }}
+		</p>
 
-				<div class="mb-3">
-					<label for="pseudo" class="form-label">Pseudo</label>
-					<input
-						type="text"
-						class="form-control"
-						id="pseudo"
-						name="pseudo"
-						placeholder="Votre pseudo"
-						required
-					/>
+		<p>
+			{% apply markdown_to_html %}
+			{{ article.contenu }}
+			{% endapply %}
+		</p>
+
+		<div>
+			<hr/>
+			<h4>
+				<i class="bi bi-tag"></i>
+				Tags</h4>
+			{% set tags_names = [] %}
+			{% for tag in tags %}
+				{% set tags_names =
+		tags_names|merge([tag.nom_tag]) %}
+			{% endfor %}
+			{{ tags_names|join(' - ') }}
+		</div>
+
+		<br/>
+		<hr/>
+		<h3 class="text-center">
+			<i class="bi bi-chat-text"></i>
+			Commentaires</h3>
+
+		<div class="text-center">
+			<button class="btn btn-primary" @click="openAddComment = true">
+				<i class="bi bi-plus-square"></i>
+				Ajouter un commentaire
+			</button>
+		</div>
+
+		<div class="m-5">
+			{% for comment in comments %}
+				<div class="border rounded border-1 border-primary border-opacity-50 p-2 mb-2">
+					<h5>
+						<strong>
+							<i class="bi bi-person-circle"></i>
+							{{ comment.nom_auteur }}
+						</strong>
+					</h5>
+					<span class="blog-post-meta">
+						<small>
+							<i class="bi bi-calendar-date-fill"></i>
+							{{ comment.date_commentaire|date("d/m/Y") }}
+						</small>
+					</span>
+					<p>
+						{{ comment.contenu }}
+					</p>
 				</div>
+			{% endfor %}
+		</div>
 
-				<div class="mb-3">
-					<label for="mail" class="form-label">Adresse mail</label>
-					<input
-						type="email"
-						class="form-control"
-						id="mail"
-						name="mail"
-						placeholder="name@example.com"
-						required
-					/>
-				</div>
+		<div class="modal" x-show="openAddComment" style="display: block" x-cloak>
+			<div @click.away="openAddComment = false" class="confirm">
+				<h3>Nouveau commentaire</h3>
 
-				{% else %}
+				<form action="app.php?action=addComment" method="POST">
+					<input type="hidden" value="{{ article.id }}" name="id"/>
+					{% if user == null %}
 
-				<input
-					type="hidden"
-					value="{{ user.email }}"
-					id="mail"
-					name="mail"
-				/>
-				<input
-					type="hidden"
-					value="{{ user.nom_utilisateur }}"
-					id="pseudo"
-					name="pseudo"
-				/>
+						<div class="mb-3">
+							<label for="pseudo" class="form-label">Pseudo</label>
+							<input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre pseudo" required/>
+						</div>
 
-				{% endif %}
+						<div class="mb-3">
+							<label for="mail" class="form-label">Adresse mail</label>
+							<input type="email" class="form-control" id="mail" name="mail" placeholder="name@example.com" required/>
+						</div>
 
-				<div class="mb-3">
-					<label for="commentContent" class="form-label"
-						>Commentaire</label
-					>
-					<textarea
-						class="form-control"
-						id="commentContent"
-						name="commentContent"
-						rows="4"
-					></textarea>
-				</div>
+					{% else %}
 
-				<div class="confirm-buttons">
-					<button
-						@click="openAddComment = false"
-						class="btn btn-secondary"
-						type="reset"
-					>
-						Annuler
-					</button>
+						<input type="hidden" value="{{ user.email }}" id="mail" name="mail"/>
+						<input type="hidden" value="{{ user.nom_utilisateur }}" id="pseudo" name="pseudo"/>
 
-					{# Le clic final redirige vers l'action PHP du contrôleur #}
-					<button type="submit" class="btn btn-success">
-						Envoyer le commentaire
-					</button>
-				</div>
-			</form>
+					{% endif %}
+
+					<div class="mb-3">
+						<label for="commentContent" class="form-label">Commentaire</label>
+						<textarea class="form-control" id="commentContent" name="commentContent" rows="4"></textarea>
+					</div>
+
+					<div class="confirm-buttons">
+						<button @click="openAddComment = false" class="btn btn-secondary" type="reset">
+							Annuler
+						</button>
+
+						{# Le clic final redirige vers l'action PHP du contrôleur #}
+						<button type="submit" class="btn btn-success">
+							Envoyer le commentaire
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
-</div>
 
 {% endblock content %}
