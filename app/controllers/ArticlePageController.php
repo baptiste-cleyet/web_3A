@@ -26,6 +26,7 @@ class ArticlePage extends Controller
 
         echo $this->twig->render('articlePage.twig', [
             'titre_doc' => $article['titre'],
+            'currentPage' => 'articlePage.twig',
             'article' => $article,
             'auteur' => $author,
             'tags' => $tags,

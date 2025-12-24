@@ -51,6 +51,8 @@ class RegisterController extends Controller
         }
 
         echo $this->twig->render('signup.twig', [
+            'titre_doc' => 'Inscription',
+            'currentPage' => 'signup.twig',
             'error' => $error,
         ]);
     }

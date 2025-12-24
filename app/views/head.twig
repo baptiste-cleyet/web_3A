@@ -1,58 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" 		
-x-data="{ openUserModal: false }"
-x-cloak>
+<html lang="en" x-data="{ openUserModal: false }" x-cloak>
 	<head>
 		<title>{{ titre_doc }}</title>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" href="static/img/icone.png" />
-		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-		<link href="static/css/global.css" rel="stylesheet" />
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="icon" href="static/img/icone.png"/>
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="static/css/global.css" rel="stylesheet"/>
 		<link
-			href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.css"
-			rel="stylesheet"
-		/>
-		<script defer src="node_modules/alpinejs/dist/cdn.min.js"></script>
+		href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
+		 <script defer src="node_modules/alpinejs/dist/cdn.min.js"></script>
 		{% block stylesheets %}{% endblock %}
 	</head>
 
-	<nav
-		class="navbar navbar-expand-md navbar-light fixed-top bg-light"
-		aria-label="Menu de navigation"
-	>
+	<nav class="navbar navbar-expand-md navbar-light fixed-top bg-light" aria-label="Menu de navigation">
 		<div class="container-fluid">
 			<div class="collapse navbar-collapse" id="navbarCollapse">
 				<ul class="navbar-nav me-auto mb-2 mb-md-0">
 					{% for item in menu %}
-					<li class="nav-item">
-						<a
-							{% if currentPage == item.page %}
-								class="nav-link active"
-								aria-current="page"
-							{% else %}
-								class="nav-link"
+						<li class="nav-item">
+							{% set navClass = "nav-link" %}
+							{% if item.disabled == 1 %}
+								{% set navClass = navClass ~ " disabled" %}
+							{% elseif currentPage == item.page %}
+								{% set navClass = navClass ~ " active" %}
 							{% endif %}
-							href="{{ item.url }}"
-							{% if item.disabled %}
-							aria-disabled="true"
-							class='nav-link disabled'
-							{% endif %}
-						>
-							{{ item.label }}
-						</a>
-					</li>
+
+							<a class="{{ navClass }}" {% if item.disabled == 1 %} aria-disabled="true" {% else %} href="{{ item.url }}" {{ currentPage == item.page ? 'aria-current="page"' : '' }} {% endif %}>
+								{{ item.label }}
+							</a>
+						</li>
 					{% endfor %}
 				</ul>
 				<div class="d-flex">
 					{% if user %}
-					<a class="btn btn-outline-primary" x-on:click="openUserModal = true">
-						<i class="bi bi-person"></i> {{ user.nom_utilisateur }}
-					</a>
+						<a class="btn btn-outline-primary" x-on:click="openUserModal = true">
+							<i class="bi bi-person"></i>
+							{{ user.nom_utilisateur }}
+						</a>
 					{% else %}
-					<a class="btn btn-outline-primary"  href='app.php?route=login'>
-						<i class="bi bi-person"></i> Se connecter
-					</a>
+						{% if currentPage == "login.twig" or currentPage == "signup.twig" %}
+							<a class="btn btn-primary" href="app.php?route=login">
+								<i class="bi bi-person"></i>
+								Se connecter
+							</a>
+						{% else %}
+							<a class="btn btn-outline-primary" href="app.php?route=login">
+								<i class="bi bi-person"></i>
+								Se connecter
+							</a>
+						{% endif %}
 					{% endif %}
 				</div>
 			</div>
@@ -61,8 +58,12 @@ x-cloak>
 	<div class="modal" x-show="openUserModal">
 		<div @click.away="openUserModal = false" class="confirm">
 			<h3>{{ user.nom_utilisateur }}</h3>
-			<p>Adresse mail : {{ user.email }} </p>
-			<p>Date d'inscription : {{ user.date_inscription|date("d/m/Y") }} </p>
+			<p>Adresse mail :
+				{{ user.email }}</p>
+			<p>
+				Date d'inscription :
+				{{ user.date_inscription|date("d/m/Y") }}
+			</p>
 
 			<div class="confirm-buttons">
 				<button @click="openUserModal = false" class="btn btn-secondary">
@@ -70,16 +71,16 @@ x-cloak>
 				</button>
 
 				{# Le clic final redirige vers l'action PHP du contrôleur #}
-				<a
-					href = "app.php?action=disconnect"
-					class="btn btn-danger"
-				>
-				<i class="bi bi-box-arrow-right"></i> Se déconnecter
-			</a>
+				<a href="app.php?action=disconnect" class="btn btn-danger">
+					<i class="bi bi-box-arrow-right"></i>
+					Se déconnecter
+				</a>
 			</div>
 		</div>
 	</div>
-	<main class="container">{% block content %}{% endblock %}</main>
+	<main class="container"> {% block content %}{% endblock %}
+		</main>
 
-	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+		 <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+	</html>
 </html>

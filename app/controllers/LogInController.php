@@ -48,6 +48,8 @@ class LoginController extends Controller
             }
         }
         echo $this->twig->render('login.twig', [
+            'titre_doc' => 'Connexion',
+            'currentPage' => 'login.twig',
             'error' => $error,
         ]);
     }

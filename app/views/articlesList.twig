@@ -1,23 +1,6 @@
 {% extends 'head.twig' %}{% block stylesheets %}
 <link rel="stylesheet" href="static/css/articlesList.css" />
-{% endblock %} {% block content %} {#
-<header class="text-center">
-	{% if username %}
-	<div class="text-center pt-2">
-		<h2>Bienvenue {{ username }} !</h2>
-	</div>
-	{% if userGestion %}
-	<a
-		type="button"
-		class="btn btn-outline-primary"
-		href="app.php?route=usersList"
-		>Gestion des utilisateurs
-	</a>
-	{% endif %} {% else %}
-	<div class="text-center pt-2"><h2>Bienvenue invité !</h2></div>
-	{% endif %}
-</header>
-#}
+{% endblock %} {% block content %}
 <div class="album py-5 bg-light">
 	<div class="container">
 		<div class="row">
