@@ -54,11 +54,13 @@ switch ($route) {
         break;
 
     case 'home':
-        echo $twig->render('login.twig');
+        require_once 'app/controllers/ArticlesListController.php';
+        (new ArticlesListController($twig))->index();
         break;
 
     default:
-        echo $twig->render('login.twig');
+        require_once 'app/controllers/ArticlesListController.php';
+        (new ArticlesListController($twig))->index();
         break;
 }
 
