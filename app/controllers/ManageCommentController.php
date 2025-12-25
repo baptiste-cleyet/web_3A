@@ -1,0 +1,36 @@
+<?php
+
+require_once __DIR__.'/SessionManager.php';
+require_once __DIR__.'/../models/Comment.php';
+require_once __DIR__.'/Controller.php';
+class ManageCommentController extends Controller
+{
+    protected $twig;
+
+    // Constructeur
+    public function __construct($twig)
+    {
+        parent::__construct($twig);
+        $this->twig = $twig;
+    }
+
+    public function index()
+    {
+        $commentModel = new Comment();
+
+        $search = $_GET['search'] ?? null;
+
+        if ($search) { //si on a recherché quelque chose
+            $commentsList = $commentModel->search_comments_with_user_or_content($search);
+        } else { //pas de recherceh
+            $commentsList = $commentModel->allComments();
+        }
+
+        echo $this->twig->render('ManageComments.twig', [
+            'currentPage' => 'ManageComments.twig',
+            'titre_doc' => 'Gestion des commentaires',
+            'commentsList' => $commentsList,
+            'currentSearch' => $search
+        ]);
+    }
+}

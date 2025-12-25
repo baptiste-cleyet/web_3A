@@ -53,6 +53,11 @@ switch ($route) {
         (new UsersListController($twig))->index();
         break;
 
+    case 'manageComments' :
+        require_once 'app/controllers/ManageCommentController.php';
+        (new ManageCommentController($twig))->index();
+        break;
+
     case 'home':
         require_once 'app/controllers/ArticlesListController.php';
         (new ArticlesListController($twig))->index();
@@ -86,6 +91,22 @@ switch ($action) {
         $id = $var[0];
         $error = !$var[1];
         header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
+        break;
+
+
+    case 'rejectComment':
+        require_once 'app/controllers/ActionsController.php';
+        $reject_id = $_GET['id'];
+        (new ActionsController())->rejectComment($reject_id);
+        header('Location: app.php?route=manageComments');
+        break;
+
+    case 'approveComment' :
+
+        require_once 'app/controllers/ActionsController.php';
+        $approve_id = $_GET['id'];
+        (new ActionsController())->approveComment($approve_id);
+        header('Location: app.php?route=manageComments');
         break;
 
     case 'disconnect' :

@@ -1,2 +1,87 @@
-{% extends 'head.twig' %}
+{% extends "head.twig" %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="static/css/usersList.css"/>
+
+{% endblock %}
+
+
 {% block content %}
+    <div x-data="{ openReject: false, actionUrl: '' }" x-cloak>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form action="app.php" method="GET">
+                        <input type="hidden" name="route" value="manageComments">
+
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Rechercher..." value="{{ currentSearch }}">
+
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="bi bi-search"></i> Rechercher
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-primary text-center">
+            <th scope="col" class="d-none d-sm-table-cell">Identifiant</th>
+            <th scope="col">Article</th>
+            <th scope="col">Auteur</th>
+            <th scope="col">Contenu</th>
+            <th scope="col" colspan="2">Actions</th>
+            </thead>
+            <tbody id="usersTableBody">
+            <br>
+
+            <br>
+            {% for comment in commentsList %}
+                <tr class="user-row" data-search="{{ user.nom_utilisateur|lower }} {{ user.email|lower }}">
+                    <td class="d-none d-sm-table-cell">{{ comment.id }}</td>
+                    <td>{{ comment.article_id }}</td>
+                    <td>{{ comment.nom_auteur }}</td>
+                    <td class="text-break">{{ comment.contenu }}</td>
+                    <td>
+                        <a class="btn btn-outline-success" href="app.php?action=approveComment&id={{ comment.id }}">
+                            Approuver
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" x-on:click="actionUrl = 'app.php?action=rejectComment&id={{ comment.id }}'; openReject = true">
+                            Rejeter
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr id="noResultRow" style="display: none;">
+                <td colspan="5" class="text-center text-muted">Aucun commentaire trouvé.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="modal" x-show="openReject" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content" @click.away="openReject = false">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Rejeter le commentaire</h5>
+                        <button type="button" class="btn-close" @click="openReject = false"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Êtes-vous sûr de vouloir supprimer définitivement ce commentaire ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="openReject = false">Annuler</button>
+
+
+                        <button type="button" class="btn btn-danger" @click="window.location.href = actionUrl">
+                            Confirmer le rejet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

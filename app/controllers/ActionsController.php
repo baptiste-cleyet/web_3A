@@ -3,6 +3,7 @@
 require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/User.php';
 require_once __DIR__.'/../models/Role.php';
+require_once __DIR__.'/../models/Comment.php';
 require_once __DIR__.'/../models/Permission.php';
 require_once __DIR__.'/../models/Article.php';
 
@@ -20,6 +21,30 @@ class ActionsController
         return;
     }
 
+    public function rejectComment($id)
+    {
+        $permissionModel = new Permission();
+
+        if ($permissionModel->checkPermission($id, 'commentaire_gerer')) {
+            $commentModel = new Comment();
+
+            return $commentModel->reject_comment($id);
+        }
+
+        return;
+    }
+
+    public function approveComment($id)
+    {
+        $permissionModel = new Permission();
+        if ($permissionModel->checkPermission($id, 'commentaire_gerer')) {
+            $commentModel = new Comment();
+
+            return $commentModel->approve_comment($id);
+        }
+
+        return;
+    }
     public function updateRoles()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

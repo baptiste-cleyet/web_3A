@@ -18,8 +18,16 @@ class UsersListController extends Controller
     public function index()
     {
         $roleModel = new Role();
+        $userModel = new User();
 
-        $usersList = $roleModel->users_list_with_roles();
+        $search = $_GET['search'] ?? null;
+
+        if ($search) { //si on a recherché quelque chose
+            $usersList = $userModel->search_users_with_roles($search);
+        } else { //pas de recherceh
+            $usersList = $roleModel->users_list_with_roles();
+        }
+
         $rolesList = $roleModel->roles_list();
 
         echo $this->twig->render('usersList.twig', [
@@ -27,6 +35,7 @@ class UsersListController extends Controller
             'titre_doc' => 'Gestion des utilisateurs',
             'usersList' => $usersList,
             'rolesList' => $rolesList,
+            'currentSearch' => $search
         ]);
     }
 }

@@ -43,6 +43,45 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+
+    public function search_users_with_roles($query)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+
+        $sql = 'SELECT roles.nom_role, utilisateurs.id, utilisateurs.nom_utilisateur, utilisateurs.email 
+        FROM roles
+        JOIN role_user ON role_user.role_id = roles.id
+        JOIN utilisateurs ON utilisateurs.id = role_user.user_id
+        WHERE utilisateurs.nom_utilisateur LIKE :query OR utilisateurs.email LIKE :query
+        ORDER BY utilisateurs.id;';
+
+        $stmt = $pdo->prepare($sql);
+
+
+        $stmt->execute([':query' => "%$query%"]);
+
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+        $grouped_res = [];
+        $previous_id = -1;
+        for ($i = 0; $i < count($res); ++$i) {
+            if ($res[$i]['id'] == $previous_id) {
+                array_push($grouped_res[count($grouped_res) - 1]['nom_roles'], $res[$i]['nom_role']);
+            } else {
+                $new_array = $res[$i];
+                unset($new_array['nom_role']);
+                $new_array['nom_roles'] = [$res[$i]['nom_role']];
+                array_push($grouped_res, $new_array);
+            }
+            $previous_id = $res[$i]['id'];
+        }
+
+        return $grouped_res;
+    }
+
     public function find_by_email($email)
     {
         $pdo = Database::getInstance()->getConnection();
