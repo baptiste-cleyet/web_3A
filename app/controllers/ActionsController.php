@@ -65,7 +65,7 @@ class ActionsController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? null;
             $pseudo = $_POST['pseudo'] ?? '';
-            $mail = $_POST['mail'] ?? '';
+            $mail = $_POST['mail'] ?? null;
             $commentContent = $_POST['commentContent'] ?? '';
 
             $articleModel = new Article();
