@@ -21,26 +21,27 @@ class ActionsController
         return;
     }
 
-    public function rejectComment($id)
+    public function rejectComment($id_comment, $id_user)
     {
         $permissionModel = new Permission();
 
-        if ($permissionModel->checkPermission($id, 'commentaire_gerer')) {
+        if ($permissionModel->checkPermission($id_user, 'commentaire_gerer')) {
             $commentModel = new Comment();
 
-            return $commentModel->reject_comment($id);
+            return $commentModel->reject_comment($id_comment);
         }
 
         return;
     }
 
-    public function approveComment($id)
+    public function approveComment($id_comment, $id_user)
     {
         $permissionModel = new Permission();
-        if ($permissionModel->checkPermission($id, 'commentaire_gerer')) {
+        if ($permissionModel->checkPermission($id_user, 'commentaire_gerer')) {
+
             $commentModel = new Comment();
 
-            return $commentModel->approve_comment($id);
+            return $commentModel->approve_comment($id_comment);
         }
 
         return;

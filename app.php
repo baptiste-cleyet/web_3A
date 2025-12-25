@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 use Twig\Extra\Markdown\ErusevMarkdown;
 use Twig\Extra\Markdown\MarkdownExtension;
@@ -77,13 +80,13 @@ switch ($action) {
         $delete_id = $_GET['delete_id'];
         (new ActionsController())->deleteUser($delete_id);
         header('Location: app.php?route=usersList');
-        break;
+        exit;
 
     case 'updateRoles':
         require_once 'app/controllers/ActionsController.php';
         (new ActionsController())->updateRoles();
         header('Location: app.php?route=usersList');
-        break;
+        exit;
 
     case 'addComment' :
         require_once 'app/controllers/ActionsController.php';
@@ -91,29 +94,30 @@ switch ($action) {
         $id = $var[0];
         $error = !$var[1];
         header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
-        break;
+        exit;
 
 
     case 'rejectComment':
         require_once 'app/controllers/ActionsController.php';
-        $reject_id = $_GET['id'];
-        (new ActionsController())->rejectComment($reject_id);
+        $comment_id = $_GET['id'];
+        $user_id = $_GET['user_id'];
+        (new ActionsController())->rejectComment($comment_id, $user_id);
         header('Location: app.php?route=manageComments');
-        break;
+        exit;
 
     case 'approveComment' :
-
         require_once 'app/controllers/ActionsController.php';
-        $approve_id = $_GET['id'];
-        (new ActionsController())->approveComment($approve_id);
+        $comment_id = $_GET['id'];
+        $user_id = $_GET['user_id'];
+        (new ActionsController())->approveComment($comment_id, $user_id);
         header('Location: app.php?route=manageComments');
-        break;
+        exit;
 
     case 'disconnect' :
         require_once 'app/controllers/ActionsController.php';
         (new ActionsController())->disconnect();
         header('Location: app.php?route=articlesList');
-        break;
+        exit;
 
     default:
         break;

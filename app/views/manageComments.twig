@@ -37,18 +37,18 @@
 
             <br>
             {% for comment in commentsList %}
-                <tr class="user-row" data-search="{{ user.nom_utilisateur|lower }} {{ user.email|lower }}">
+                <tr class="comment-row" data-search="{{ comment.nom_auteur|lower }} {{ comment.id|lower }}">
                     <td class="d-none d-sm-table-cell">{{ comment.id }}</td>
                     <td>{{ comment.article_id }}</td>
                     <td>{{ comment.nom_auteur }}</td>
                     <td class="text-break">{{ comment.contenu }}</td>
                     <td>
-                        <a class="btn btn-outline-success" href="app.php?action=approveComment&id={{ comment.id }}">
+                        <a class="btn btn-outline-success" href="app.php?action=approveComment&id={{ comment.id }}&user_id={{ user_id }}">
                             Approuver
                         </a>
                     </td>
                     <td>
-                        <a class="btn btn-outline-danger" x-on:click="actionUrl = 'app.php?action=rejectComment&id={{ comment.id }}'; openReject = true">
+                        <a class="btn btn-outline-danger" x-on:click="actionUrl = 'app.php?action=rejectComment&id={{ comment.id }}&user_id={{ user_id }}'; openReject = true">
                             Rejeter
                         </a>
                     </td>
