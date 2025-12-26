@@ -6,12 +6,9 @@ require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/Controller.php';
 class LoginController extends Controller
 {
-    protected $twig;
-
-    public function __construct($twig)
+    public function __construct()
     {
-        parent::__construct($twig);
-        $this->twig = $twig;
+        parent::__construct();
     }
 
     public function index()

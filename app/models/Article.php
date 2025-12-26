@@ -115,4 +115,18 @@ class Article
             return false;
         }
     }
+
+    public function countWaitingComment()
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT COUNT(*) as nb FROM commentaires
+            WHERE statut = 'En attente';";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

@@ -1,16 +1,19 @@
 <?php
 
 require_once __DIR__.'/SessionManager.php';
+require_once __DIR__.'/Controller.php';
 require_once __DIR__.'/../models/User.php';
 require_once __DIR__.'/../models/Role.php';
 require_once __DIR__.'/../models/Comment.php';
 require_once __DIR__.'/../models/Permission.php';
 require_once __DIR__.'/../models/Article.php';
 
-class ActionsController
+class ActionsController extends Controller
 {
     public function deleteUser($id)
     {
+        parent::__construct();
+
         $permissionModel = new Permission();
         if ($permissionModel->checkPermission($id, 'utilisateur_gerer')) {
             $userModel = new User();
@@ -38,7 +41,6 @@ class ActionsController
     {
         $permissionModel = new Permission();
         if ($permissionModel->checkPermission($id_user, 'commentaire_gerer')) {
-
             $commentModel = new Comment();
 
             return $commentModel->approve_comment($id_comment);
@@ -46,6 +48,7 @@ class ActionsController
 
         return;
     }
+
     public function updateRoles()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -71,6 +74,24 @@ class ActionsController
             $articleModel = new Article();
 
             $success = $articleModel->addComment($id, $mail, $pseudo, $commentContent);
+        }
+
+        if ($success) {
+            $nb = $articleModel->countWaitingComment() ?? null;
+            if ($nb) {
+                $nbPhrase = "\r\nIl y a désormais $nb commentaires en attente de validation.";
+            } else {
+                $nbPhrase = "\r\nInformation sur le nombre total de commentaires en attente indisponible.";
+            }
+
+            // Le message
+            $message = "Bonjour,\r\nUn nouveau commentaire a été ajouté en attente.".$nbPhrase;
+
+            // Dans le cas où nos lignes comportent plus de 70 caractères, nous les coupons en utilisant wordwrap()
+            $message = wordwrap($message, 70, "\r\n");
+
+            // Envoi du mail
+            mail('caffeinated@example.com', 'Mon Sujet', $message);
         }
 
         return [$id, $success];

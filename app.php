@@ -1,45 +1,28 @@
 <?php
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-use Twig\Extra\Markdown\ErusevMarkdown;
-use Twig\Extra\Markdown\MarkdownExtension;
-use Twig\Extra\Markdown\MarkdownRuntime;
-use Twig\RuntimeLoader\FactoryRuntimeLoader;
-
 /* inclure l'autoloader */
 require_once 'vendor/autoload.php';
-
-/* templates chargés à partir du système de fichiers (répertoire vue) */
-$loader = new Twig\Loader\FilesystemLoader('app/views');
-
-$twig = new Twig\Environment($loader, ['cache' => false]);
-
-$twig->addExtension(new MarkdownExtension());
-
-$twig->addRuntimeLoader(new FactoryRuntimeLoader([
-    MarkdownRuntime::class => function () {
-        return new MarkdownRuntime(new ErusevMarkdown());
-    },
-]));
 
 $route = $_GET['route'] ?? 'home';
 
 switch ($route) {
     case 'signup':
         require_once 'app/controllers/RegisterController.php';
-        (new RegisterController($twig))->index();
+        (new RegisterController())->index();
         break;
 
     case 'login':
         require_once 'app/controllers/LoginController.php';
-        (new LoginController($twig))->index();
+        (new LoginController())->index();
         break;
 
     case 'articlesList':
         require_once 'app/controllers/ArticlesListController.php';
-        (new ArticlesListController($twig))->index();
+        (new ArticlesListController())->index();
         break;
 
     case 'article':
@@ -48,27 +31,27 @@ switch ($route) {
         $addComment = $_GET['addComment'] ?? false;
 
         require_once 'app/controllers/ArticlePageController.php';
-        (new ArticlePage($twig))->index($id, $error, $addComment);
+        (new ArticlePage())->index($id, $error, $addComment);
         break;
 
     case 'usersList' :
         require_once 'app/controllers/UsersListController.php';
-        (new UsersListController($twig))->index();
+        (new UsersListController())->index();
         break;
 
     case 'manageComments' :
         require_once 'app/controllers/ManageCommentController.php';
-        (new ManageCommentController($twig))->index();
+        (new ManageCommentController())->index();
         break;
 
     case 'home':
         require_once 'app/controllers/ArticlesListController.php';
-        (new ArticlesListController($twig))->index();
+        (new ArticlesListController())->index();
         break;
 
     default:
         require_once 'app/controllers/ArticlesListController.php';
-        (new ArticlesListController($twig))->index();
+        (new ArticlesListController())->index();
         break;
 }
 
@@ -95,7 +78,6 @@ switch ($action) {
         $error = !$var[1];
         header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
         exit;
-
 
     case 'rejectComment':
         require_once 'app/controllers/ActionsController.php';
@@ -126,6 +108,3 @@ switch ($action) {
 /* options : prod = cache dans le répertoire cache, dev = pas de cache */
 $options_prod = ['cache' => 'cache', 'autoescape' => true];
 $options_dev = ['cache' => false, 'autoescape' => true];
-
-/* stocker la configuration */
-$twig = new Twig\Environment($loader);

@@ -1,20 +1,43 @@
 <?php
 
 require_once __DIR__.'/../models/Permission.php';
+
+use Twig\Extra\Markdown\ErusevMarkdown;
+use Twig\Extra\Markdown\MarkdownExtension;
+use Twig\Extra\Markdown\MarkdownRuntime;
+use Twig\RuntimeLoader\FactoryRuntimeLoader;
+
 abstract class Controller
 {
     protected $twig;
+    protected $commentNotificationEmail;
 
-    public function __construct($twig)
+    public function __construct()
     {
-        // On définit ici les données partagées par TOUS les contrôleurs
-        $this->twig = $twig;
+        /* templates chargés à partir du système de fichiers (répertoire vue) */
+        $loader = new Twig\Loader\FilesystemLoader('app/views');
+
+        $this->twig = new Twig\Environment($loader, ['cache' => false]);
+
+        $this->twig->addExtension(new MarkdownExtension());
+
+        $this->twig->addRuntimeLoader(new FactoryRuntimeLoader([
+            MarkdownRuntime::class => function () {
+                return new MarkdownRuntime(new ErusevMarkdown());
+            },
+        ]));
 
         $user = SessionManager::getInstance()->get('user');
         $this->twig->addGlobal('user', $user);
         $user_id = $user['id'] ?? null;
+        $this->twig->addGlobal('menu', $this->createMenu($user_id));
 
-        if ($user == null) {
+        $this->commentNotificationEmail = 'baptiste.cleyet@etu.univ-lyon1.fr';
+    }
+
+    private function createMenu($user_id)
+    {
+        if ($user_id == null) {
             $userGestion = false;
             $commentGestion = false;
         } else {
@@ -42,6 +65,7 @@ abstract class Controller
                 'page' => 'manageComments.twig',
             ],
         ];
-        $this->twig->addGlobal('menu', $menu);
+
+        return $menu;
     }
 }

@@ -7,13 +7,10 @@ require_once __DIR__.'/Controller.php';
 
 class RegisterController extends Controller
 {
-    protected $twig;
-
     // Constructeur
-    public function __construct($twig)
+    public function __construct()
     {
-        parent::__construct($twig);
-        $this->twig = $twig;
+        parent::__construct();
     }
 
     // La méthode principale qui gère la page

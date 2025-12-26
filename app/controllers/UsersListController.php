@@ -6,13 +6,10 @@ require_once __DIR__.'/../models/Role.php';
 require_once __DIR__.'/Controller.php';
 class UsersListController extends Controller
 {
-    protected $twig;
-
     // Constructeur
-    public function __construct($twig)
+    public function __construct()
     {
-        parent::__construct($twig);
-        $this->twig = $twig;
+        parent::__construct();
     }
 
     public function index()
@@ -22,9 +19,9 @@ class UsersListController extends Controller
 
         $search = $_GET['search'] ?? null;
 
-        if ($search) { //si on a recherché quelque chose
+        if ($search) { // si on a recherché quelque chose
             $usersList = $userModel->search_users_with_roles($search);
-        } else { //pas de recherceh
+        } else { // pas de recherceh
             $usersList = $roleModel->users_list_with_roles();
         }
 
@@ -35,7 +32,7 @@ class UsersListController extends Controller
             'titre_doc' => 'Gestion des utilisateurs',
             'usersList' => $usersList,
             'rolesList' => $rolesList,
-            'currentSearch' => $search
+            'currentSearch' => $search,
         ]);
     }
 }
