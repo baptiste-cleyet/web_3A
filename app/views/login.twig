@@ -4,6 +4,13 @@
 {% endblock stylesheets %}
 {% block content %}
 <form action="app.php?route=login" class="form-signin" method="POST">
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <i class="bi bi-info-circle"></i>
+        {{ error }}
+        <a type="button" class="btn-close" href="app.php?route=login"></a>
+    </div>
+    {% endif %}
     <p>Connectez-vous à votre compte</p>
 
     <div data-mdb-input-init class="form-outline mb-4">
@@ -51,8 +58,5 @@
             S'inscrire
         </a>
     </div>
-    {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
 </form>
 {% endblock content %}

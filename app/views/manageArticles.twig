@@ -1,0 +1,100 @@
+{% extends "head.twig" %}
+{% block stylesheets %}
+    {# Tu peux garder tes styles ici #}
+{% endblock %}
+
+{% block content %}
+    {# On initialise la variable Alpine 'openAddModal' à false #}
+    <div x-data="{ openAddModal: false }" x-cloak>
+
+
+
+        <div class="container mt-4">
+            <button class="btn btn-primary" @click="openAddModal = true">
+                <i class="bi bi-plus-circle"></i> Ajouter un nouvel article
+            </button>
+        </div>
+
+        <div class="modal" tabindex="-1" x-show="openAddModal" style="display: block; background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content" @click.away="openAddModal = false">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Rédiger un nouvel article</h5>
+                        <button type="button" class="btn-close" @click="openAddModal = false"></button>
+                    </div>
+
+                    <form action="app.php?action=createArticle" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Titre</label>
+                                <textarea class="form-control" name="titre" rows="2" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Slug</label>
+                                <textarea class="form-control" name="slug" rows="2" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contenu</label>
+                                <textarea class="form-control" name="contenu" rows="8" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="openAddModal = false">Annuler</button>
+
+                            <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white">
+                                <i class="bi bi-save"></i> Sauvegarder en brouillon
+                            </button>
+
+                            <button type="submit" name="etat" value="publie" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Publier maintenant
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr>
+
+    <h1>Brouillons</h1>
+    <br><br><br>
+    <div>
+
+    </div>
+    <hr>
+    <h1>Articles publiés</h1>
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                {% for article in publishedArticles %}
+                    <div class="col-6 col-sm-4 col-md-3">
+                        <div class="card mb-4 shadow-sm">
+                            {% if article.image_une != null %}
+                                <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article"/>
+                            {% else %}
+                                <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article"/>
+                            {% endif %}
+                            <div class="card-body">
+                                <p class="card-text">
+                                    {{ article.titre }}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary" href="app.php?route=article&id={{ article.id }}">
+                                        Voir
+                                    </a>
+                                    <a type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary" href="app.php?action=archiveArticle&id={{ article.id }}">
+                                        Archiver
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

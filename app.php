@@ -7,6 +7,75 @@ error_reporting(E_ALL);
 /* inclure l'autoloader */
 require_once 'vendor/autoload.php';
 
+
+
+$action = $_GET['action'] ?? '';
+
+if (!empty($action)) {
+    switch ($action) {
+        case 'delete':
+            require_once 'app/controllers/ActionsController.php';
+            $delete_id = $_GET['delete_id'];
+            (new ActionsController())->deleteUser($delete_id);
+            header('Location: app.php?route=usersList');
+            exit;
+
+        case 'updateRoles':
+            require_once 'app/controllers/ActionsController.php';
+            (new ActionsController())->updateRoles();
+            header('Location: app.php?route=usersList');
+            exit;
+
+        case 'archiveArticle':
+            require_once 'app/controllers/ActionsController.php';
+            $archive_id = $_GET['id'];
+            (new ActionsController())->archiveArticle($archive_id);
+            header('Location: app.php?route=manageArticles');
+            exit;
+
+        case 'createArticle': // J'ajoute celui qu'on faisait avant
+            require_once 'app/controllers/ActionsController.php';
+            (new ActionsController())->createArticle();
+            header('Location: app.php?route=manageArticles');
+            exit;
+
+        case 'addComment' :
+            require_once 'app/controllers/ActionsController.php';
+            $var = (new ActionsController())->addComment();
+            $id = $var[0];
+            $error = !$var[1];
+            header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
+            exit;
+
+        case 'rejectComment':
+            require_once 'app/controllers/ActionsController.php';
+            $comment_id = $_GET['id'];
+            $user_id = $_GET['user_id'];
+            (new ActionsController())->rejectComment($comment_id, $user_id);
+            header('Location: app.php?route=manageComments');
+            exit;
+
+        case 'approveComment' :
+            require_once 'app/controllers/ActionsController.php';
+            $comment_id = $_GET['id'];
+            $user_id = $_GET['user_id'];
+            (new ActionsController())->approveComment($comment_id, $user_id);
+            header('Location: app.php?route=manageComments');
+            exit;
+
+        case 'disconnect' :
+            require_once 'app/controllers/ActionsController.php';
+            (new ActionsController())->disconnect();
+            header('Location: app.php?route=articlesList');
+            exit;
+
+        default:
+            break;
+    }
+}
+
+
+
 $route = $_GET['route'] ?? 'home';
 
 switch ($route) {
@@ -44,6 +113,11 @@ switch ($route) {
         (new ManageCommentController())->index();
         break;
 
+    case 'manageArticles' :
+        require_once 'app/controllers/ManageArticlesController.php';
+        (new ManageArticlesController())->index();
+        break;
+
     case 'home':
         require_once 'app/controllers/ArticlesListController.php';
         (new ArticlesListController())->index();
@@ -52,56 +126,6 @@ switch ($route) {
     default:
         require_once 'app/controllers/ArticlesListController.php';
         (new ArticlesListController())->index();
-        break;
-}
-
-$action = $_GET['action'] ?? '';
-
-switch ($action) {
-    case 'delete':
-        require_once 'app/controllers/ActionsController.php';
-        $delete_id = $_GET['delete_id'];
-        (new ActionsController())->deleteUser($delete_id);
-        header('Location: app.php?route=usersList');
-        exit;
-
-    case 'updateRoles':
-        require_once 'app/controllers/ActionsController.php';
-        (new ActionsController())->updateRoles();
-        header('Location: app.php?route=usersList');
-        exit;
-
-    case 'addComment' :
-        require_once 'app/controllers/ActionsController.php';
-        $var = (new ActionsController())->addComment();
-        $id = $var[0];
-        $error = !$var[1];
-        header("Location: app.php?route=article&id=$id&commentError=$error&addComment=true");
-        exit;
-
-    case 'rejectComment':
-        require_once 'app/controllers/ActionsController.php';
-        $comment_id = $_GET['id'];
-        $user_id = $_GET['user_id'];
-        (new ActionsController())->rejectComment($comment_id, $user_id);
-        header('Location: app.php?route=manageComments');
-        exit;
-
-    case 'approveComment' :
-        require_once 'app/controllers/ActionsController.php';
-        $comment_id = $_GET['id'];
-        $user_id = $_GET['user_id'];
-        (new ActionsController())->approveComment($comment_id, $user_id);
-        header('Location: app.php?route=manageComments');
-        exit;
-
-    case 'disconnect' :
-        require_once 'app/controllers/ActionsController.php';
-        (new ActionsController())->disconnect();
-        header('Location: app.php?route=articlesList');
-        exit;
-
-    default:
         break;
 }
 

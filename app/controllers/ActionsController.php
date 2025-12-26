@@ -24,6 +24,15 @@ class ActionsController extends Controller
         return;
     }
 
+    public function archiveArticle($id)
+    {
+        parent::__construct();
+
+        $articleModel = new Article();
+
+        return $articleModel->archive_article($id);
+    }
+
     public function rejectComment($id_comment, $id_user)
     {
         $permissionModel = new Permission();

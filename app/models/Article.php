@@ -57,6 +57,22 @@ class Article
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getPublishedArticlesByAuthor($id_auteur){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT * FROM articles
+        WHERE utilisateur_id = :id_auteur
+        AND statut = 'Publié'";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':id_auteur', $id_auteur, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function articleTags($id)
     {
         $pdo = Database::getInstance()->getConnection();
@@ -112,6 +128,29 @@ class Article
 
             return true;
         } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function archive_article($id):bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "UPDATE Article SET statut = 'Archivé' WHERE id = :id;";
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+            Logger::getInstance()->log("Succès : Article archivé ($id)");
+
+            return true;
+        } catch (PDOException $e) {
+            $errorMessage = "ERREUR SUPRESSION de $id - Raison SQL: ".$e->getMessage();
+            Logger::getInstance()->log($errorMessage);
+
             return false;
         }
     }

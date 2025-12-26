@@ -52,6 +52,12 @@ abstract class Controller
                 'disabled' => false,
                 'page' => 'articlesList.twig',
             ],
+            'gestionArticles' => [
+                'url' => 'app.php?route=manageArticles',
+                'label' => 'Gestion articles',
+                'disabled' => false,
+                'page' => 'manageArticles.twig',
+            ],
             'gestionUtilisateurs' => [
                 'url' => 'app.php?route=usersList',
                 'label' => 'Gestion utilisateurs',
