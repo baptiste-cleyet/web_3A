@@ -16,11 +16,11 @@ class ManageArticlesController extends Controller
 
         $articleModel = new Article();
 
-        $publishedArticles = $articleModel->getPublishedArticlesByAuthor($user_id);
+        $articlesList = $articleModel->getArticlesByAuthor($user_id);
 
         echo $this->twig->render('ManageArticles.twig', [
             'currentPage' => 'ManageArticles.twig',
-            'publishedArticles' => $publishedArticles,
+            'articlesList' => $articlesList,
             'titre_doc' => 'Gestion des articles',
         ]);
     }

@@ -57,12 +57,11 @@ class Article
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getPublishedArticlesByAuthor($id_auteur){
+    public function getArticlesByAuthor($id_auteur){
         $pdo = Database::getInstance()->getConnection();
 
         $sql = "SELECT * FROM articles
-        WHERE utilisateur_id = :id_auteur
-        AND statut = 'Publié'";
+        WHERE utilisateur_id = :id_auteur";
 
         $stmt = $pdo->prepare($sql);
 
