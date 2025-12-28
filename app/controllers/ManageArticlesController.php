@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__.'/SessionManager.php';
 require_once __DIR__.'/../models/Article.php';
 require_once __DIR__.'/Controller.php';
@@ -18,8 +19,8 @@ class ManageArticlesController extends Controller
 
         $articlesList = $articleModel->getArticlesByAuthor($user_id);
 
-        echo $this->twig->render('ManageArticles.twig', [
-            'currentPage' => 'ManageArticles.twig',
+        echo $this->twig->render('manageArticles.twig', [
+            'currentPage' => 'manageArticles.twig',
             'articlesList' => $articlesList,
             'titre_doc' => 'Gestion des articles',
         ]);

@@ -53,6 +53,7 @@ class ComposerStaticInitf170a5450eeb4737e4103da362e5f34f
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
     );
 
@@ -172,6 +173,10 @@ class ComposerStaticInitf170a5450eeb4737e4103da362e5f34f
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
     );
 

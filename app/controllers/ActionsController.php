@@ -100,7 +100,7 @@ class ActionsController extends Controller
             $message = wordwrap($message, 70, "\r\n");
 
             // Envoi du mail
-            mail('caffeinated@example.com', 'Mon Sujet', $message);
+            $success = $this->sendEmail('Commentaire en attente de validation', $message, $this->commentNotificationEmail);
         }
 
         return [$id, $success];

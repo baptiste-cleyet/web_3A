@@ -25,8 +25,8 @@ class ManageCommentController extends Controller
         $user = SessionManager::getInstance()->get('user');
         $user_id = $user['id'];
 
-        echo $this->twig->render('ManageComments.twig', [
-            'currentPage' => 'ManageComments.twig',
+        echo $this->twig->render('manageComments.twig', [
+            'currentPage' => 'manageComments.twig',
             'titre_doc' => 'Gestion des commentaires',
             'commentsList' => $commentsList,
             'user_id' => $user_id,

@@ -1,7 +1,10 @@
 <?php
 
 require_once __DIR__.'/../models/Permission.php';
+require_once __DIR__.'/Logger.php';
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use Twig\Extra\Markdown\ErusevMarkdown;
 use Twig\Extra\Markdown\MarkdownExtension;
 use Twig\Extra\Markdown\MarkdownRuntime;
@@ -73,5 +76,32 @@ abstract class Controller
         ];
 
         return $menu;
+    }
+
+    protected function sendEmail($subject, $body, $to, $isHtml = false)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Configuration du serveur SMTP (Exemple pour Mailtrap ou Gmail)
+            // Mettre la configuration mailtrap ici !!!!
+            // Destinataires
+            $mail->setFrom('noreply@monblog.dev', 'Blog web 3A');
+            $mail->addAddress($to);
+
+            // Contenu
+            $mail->isHTML($isHtml);
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+            $mail->CharSet = 'UTF-8';
+
+            $mail->send();
+
+            return true;
+        } catch (Exception $e) {
+            Logger::getInstance()->log("Erreur de phpmailer : $e");
+
+            return false;
+        }
     }
 }
