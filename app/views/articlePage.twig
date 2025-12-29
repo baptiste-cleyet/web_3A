@@ -7,14 +7,14 @@
 		<div class="alert alert-danger alert-dismissible" role="alert">
 			<i class="bi bi-exclamation-triangle"></i>
 			Le commentaire ne s'est pas
-																ajouté !
+																																																																																								ajouté !
 			<a type="button" class="btn-close" href="app.php?route=article&id={{ article.id }}"></a>
 		</div>
 	{% elseif addComment %}
 		<div class="alert alert-success alert-dismissible" role="alert">
 			<i class="bi bi-info-circle"></i>
 			Le commentaire est désormais en attente de
-																validation.
+																																																																																								validation.
 			<a type="button" class="btn-close" href="app.php?route=article&id={{ article.id }}"></a>
 		</div>
 	{% endif %}
@@ -31,11 +31,9 @@
 			{{ article.date_mise_a_jour|date("d/m/Y") }}
 		</p>
 
-		<p>
-			{% apply markdown_to_html %}
-			{{ article.contenu }}
-			{% endapply %}
-		</p>
+		{% apply markdown_to_html %}
+		{{ article.contenu }}
+		{% endapply %}
 
 		<div>
 			<hr/>
@@ -57,13 +55,13 @@
 			Commentaires</h3>
 
 		<div class="text-center">
-			<button class="btn btn-primary" @click="openAddComment = true">
+			<button class="btn btn-primary mb-2" @click="openAddComment = true">
 				<i class="bi bi-plus-square"></i>
 				Ajouter un commentaire
 			</button>
 		</div>
 
-		<div class="m-5">
+		<div class="m-sm-3">
 			{% for comment in comments %}
 				<div class="border rounded border-1 border-primary border-opacity-50 p-2 mb-2">
 					<h5>
