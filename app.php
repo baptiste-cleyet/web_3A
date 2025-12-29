@@ -7,7 +7,10 @@ error_reporting(E_ALL);
 /* inclure l'autoloader */
 require_once 'vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
+$dotenv->load();
 
+// ------------------------------------- Router -----------------------------------------
 
 $action = $_GET['action'] ?? '';
 
@@ -73,8 +76,6 @@ if (!empty($action)) {
             break;
     }
 }
-
-
 
 $route = $_GET['route'] ?? 'home';
 

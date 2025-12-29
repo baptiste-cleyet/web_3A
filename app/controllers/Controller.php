@@ -84,7 +84,10 @@ abstract class Controller
 
         try {
             // Configuration du serveur SMTP (Exemple pour Mailtrap ou Gmail)
-            // Mettre la configuration mailtrap ici !!!!
+            $mail->Host = $_ENV['MAIL_HOST'];
+            $mail->Username = $_ENV['MAIL_USERNAME'];
+            $mail->Password = $_ENV['MAIL_PASSWORD'];
+            $mail->Port = $_ENV['MAIL_PORT'];
             // Destinataires
             $mail->setFrom('noreply@monblog.dev', 'Blog web 3A');
             $mail->addAddress($to);
