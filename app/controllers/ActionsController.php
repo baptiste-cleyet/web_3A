@@ -86,7 +86,7 @@ class ActionsController extends Controller
         }
 
         if ($success) {
-            $nb = $articleModel->countWaitingComment() ?? null;
+            $nb = $articleModel->countWaitingComment()['nb'] ?? null;
             if ($nb) {
                 $nbPhrase = "\r\nIl y a désormais $nb commentaires en attente de validation.";
             } else {

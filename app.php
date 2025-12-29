@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 /* inclure l'autoloader */
 require_once 'vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // ------------------------------------- Router -----------------------------------------

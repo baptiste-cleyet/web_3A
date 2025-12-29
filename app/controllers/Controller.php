@@ -84,6 +84,9 @@ abstract class Controller
 
         try {
             // Configuration du serveur SMTP (Exemple pour Mailtrap ou Gmail)
+            $mail->isSMTP();
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Host = $_ENV['MAIL_HOST'];
             $mail->Username = $_ENV['MAIL_USERNAME'];
             $mail->Password = $_ENV['MAIL_PASSWORD'];

@@ -57,11 +57,12 @@ class Article
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getArticlesByAuthor($id_auteur){
+    public function getArticlesByAuthor($id_auteur)
+    {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "SELECT * FROM articles
-        WHERE utilisateur_id = :id_auteur";
+        $sql = 'SELECT * FROM articles
+        WHERE utilisateur_id = :id_auteur';
 
         $stmt = $pdo->prepare($sql);
 
@@ -131,7 +132,7 @@ class Article
         }
     }
 
-    public function archive_article($id):bool
+    public function archive_article($id): bool
     {
         $pdo = Database::getInstance()->getConnection();
 
