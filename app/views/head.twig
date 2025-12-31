@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" x-data="{ openUserModal: false }" x-cloak>
 	<head>
+
+		<script>
+
+			(function () {
+				const root = document.documentElement;
+				theme = document.cookie
+					.split("; ")
+					.find((row) => row.startsWith("theme="))
+					?.split("=")[1] || null;
+				
+				if (theme == null){
+					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+				
+				root.setAttribute("data-bs-theme", theme);
+			})();
+
+		</script>
+
 		<title>{{ titre_doc }}</title>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width"/>
@@ -9,12 +28,12 @@
 		<link href="static/css/global.css" rel="stylesheet"/>
 		<link
 		href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
-		 <script defer src="node_modules/alpinejs/dist/cdn.min.js"></script>
+		<script defer src="node_modules/alpinejs/dist/cdn.min.js"></script>
 		{% block stylesheets %}{% endblock %}
 		{% block script %}{% endblock %}
 	</head>
 
-	<nav class="navbar navbar-expand navbar-light fixed-top bg-light" aria-label="Menu de navigation">
+	<nav class="bg-plain navbar navbar-expand fixed-top" aria-label="Menu de navigation">
 		<div class="container-fluid">
 			<div class="collapse navbar-collapse" id="navbarCollapse">
 				<ul class="navbar-nav me-auto mb-2 mb-md-0">
@@ -34,6 +53,21 @@
 					{% endfor %}
 				</ul>
 				<div class="d-flex">
+					<div class="me-1"
+					x-data="{ 
+						themeValue: document.documentElement.getAttribute('data-bs-theme'),
+						toggle() {
+							this.themeValue = this.themeValue === 'dark' ? 'light' : 'dark';
+							document.documentElement.setAttribute('data-bs-theme', this.themeValue);
+							document.cookie = `theme=${this.themeValue};path=/;max-age=31536000`;
+							}
+						}"
+					>
+						
+						<button @click="toggle()" class="btn btn-outline-secondary">
+							<i class="bi" :class="themeValue === 'dark' ? 'bi-sun-fill' : 'bi-moon-fill'"></i>
+						</button>
+					</div>
 					{% if user %}
 						<a class="btn btn-outline-primary" x-on:click="openUserModal = true">
 							<i class="bi bi-person"></i>
@@ -60,7 +94,8 @@
 		<div @click.away="openUserModal = false" class="confirm">
 			<h3>{{ user.nom_utilisateur }}</h3>
 			<p>Adresse mail :
-				{{ user.email }}</p>
+				{{ user.email }}
+			</p>
 			<p>
 				Date d'inscription :
 				{{ user.date_inscription|date("d/m/Y") }}

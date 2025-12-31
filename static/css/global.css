@@ -1,4 +1,16 @@
+:root {
+	--bg-color: #ffffff;
+	--text-color: #212529;
+}
+
+[data-bs-theme='dark'] {
+	--bg-color: #212529;
+	--text-color: #ffffff;
+}
+
 body {
+	background-color: var(--bg-color);
+	color: var(--text-color);
 	min-height: 75rem;
 	padding-top: 4.5rem;
 }
@@ -8,6 +20,10 @@ body {
 		min-height: 150rem;
 		padding-top: 6rem;
 	}
+}
+
+.bg-plain {
+	background-color: var(--bg-color);
 }
 
 .modal {
@@ -23,7 +39,7 @@ body {
 }
 
 .confirm {
-	background: white;
+	background: var(--bg-color);
 	padding: 20px;
 	border-radius: 8px;
 	max-width: 400px;
@@ -39,23 +55,22 @@ body {
 	display: none !important;
 }
 
-
 .search-container {
-    position: relative;
+	position: relative;
 }
 
 .search-input {
-    height: 50px;
-    border-radius: 30px;
-    padding-left: 35px;
-    border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	height: 50px;
+	border-radius: 30px;
+	padding-left: 35px;
+	border: none;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-icon {
-    position: absolute;
-    top: 50%;
-    left: 15px;
-    transform: translateY(-50%);
-    color: #888;
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	transform: translateY(-50%);
+	color: #888;
 }
