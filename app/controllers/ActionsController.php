@@ -33,6 +33,74 @@ class ActionsController extends Controller
         return $articleModel->archive_article($id);
     }
 
+    public function restoreArticle($id)
+    {
+        parent::__construct();
+
+        $articleModel = new Article();
+
+        return $articleModel->restore_article($id);
+    }
+
+
+    private function generateSlug($text)
+    {
+        // Enleve les accents
+        $text = iconv('UTF-8', 'US-ASCII//TRANSLIT', $text);
+
+        // Met tout en minuscules
+        $text = strtolower($text);
+
+        // Remplace tout ce qui n'est pas une lettre ou un chiffre par un tiret
+        $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+
+        // Enleve les tirets en début et fin de chaîne (trim)
+        $text = trim($text, '-');
+
+        // Valeur par défaut (unique grace au temps) si la chaine est vide
+        if (empty($text)) {
+            return 'n-a-' . time();
+        }
+
+        return $text;
+    }
+
+    public function newArticle()
+    {
+        $user = SessionManager::getInstance()->get('user');
+        if (!$user) {
+            return false;
+        }
+        $id_user = $user['id'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $etat = $_POST['etat'] ?? 'brouillon';
+            $titre = $_POST['titre'] ?? null;
+            $contenu = $_POST['contenu'] ?? null;
+
+            $slug = $this->generateSlug($titre);
+            $statut = ($etat === 'publie') ? 'Publié' : 'Brouillon';
+
+            $permissionModel = new Permission();
+            $articleModel = new Article();
+
+            if ($etat === 'publie') {
+                if ($permissionModel->checkPermission($id_user, 'article_creer') && $permissionModel->checkPermission($id_user, 'article_publier')) {
+                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, 'Publié');
+                }
+                elseif ($permissionModel->checkPermission($id_user, 'article_creer')) {
+                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, 'Brouillon');
+                }
+            }
+            else {
+                if ($permissionModel->checkPermission($id_user, 'article_creer')) {
+                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, 'Brouillon');
+                }
+            }
+            return false;
+        }
+    }
+
     public function rejectComment($id_comment, $id_user)
     {
         $permissionModel = new Permission();
@@ -42,8 +110,6 @@ class ActionsController extends Controller
 
             return $commentModel->reject_comment($id_comment);
         }
-
-        return;
     }
 
     public function approveComment($id_comment, $id_user)

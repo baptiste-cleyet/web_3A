@@ -36,6 +36,19 @@ if (!empty($action)) {
             header('Location: app.php?route=manageArticles');
             exit;
 
+        case 'newArticle':
+            require_once 'app/controllers/ActionsController.php';
+            (new ActionsController())->newArticle();
+            header('Location: app.php?route=manageArticles');
+            exit;
+
+        case 'restoreArticle':
+            require_once 'app/controllers/ActionsController.php';
+            $archive_id = $_GET['id'];
+            (new ActionsController())->restoreArticle($archive_id);
+            header('Location: app.php?route=manageArticles');
+            exit;
+
         case 'createArticle': // J'ajoute celui qu'on faisait avant
             require_once 'app/controllers/ActionsController.php';
             (new ActionsController())->createArticle();

@@ -23,15 +23,12 @@
                         <button type="button" class="btn-close" @click="openAddModal = false"></button>
                     </div>
 
-                    <form action="app.php?action=createArticle" method="POST">
+                    <form action="app.php?action=newArticle&user_id" method="POST">
+                        <input type="hidden" value="{{ user_id }}" name="id"/>
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label">Titre</label>
                                 <textarea class="form-control" name="titre" rows="2" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Slug</label>
-                                <textarea class="form-control" name="slug" rows="2" required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contenu</label>
@@ -59,8 +56,8 @@
     <br>
     <hr>
 
-    <h1>Brouillons</h1>
-    <div class="album py-5 bg-light">
+    <h1 class="px-5">Brouillons</h1>
+    <div class="album py-5">
         <div class="container">
             <div class="row">
                 {% for article in articlesList %}
@@ -93,8 +90,8 @@
         </div>
     </div>
     <hr>
-    <h1>Articles publiés</h1>
-    <div class="album py-5 bg-light">
+    <h1 class="px-5">Articles publiés</h1>
+    <div class="album py-5">
         <div class="container">
             <div class="row">
                 {% for article in articlesList %}
@@ -127,8 +124,8 @@
         </div>
     </div>
     <hr>
-    <h1>Articles archivés</h1>
-    <div class="album py-5 bg-light">
+    <h1 class="px-5">Articles archivés</h1>
+    <div class="album py-5">
         <div class="container">
             <div class="row">
                 {% for article in articlesList %}

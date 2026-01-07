@@ -136,7 +136,7 @@ class Article
     {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "UPDATE Article SET statut = 'Archivé' WHERE id = :id;";
+        $sql = "UPDATE Articles SET statut = 'Archivé' WHERE id = :id;";
 
         $stmt = $pdo->prepare($sql);
 
@@ -152,6 +152,53 @@ class Article
             Logger::getInstance()->log($errorMessage);
 
             return false;
+        }
+    }
+
+    public function restore_article($id): bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "UPDATE Articles SET statut = 'Publié' WHERE id = :id;";
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+            Logger::getInstance()->log("Succès : Article restauré ($id)");
+
+            return true;
+        } catch (PDOException $e) {
+            $errorMessage = "ERREUR SUPRESSION de $id - Raison SQL: ".$e->getMessage();
+            Logger::getInstance()->log($errorMessage);
+
+            return false;
+        }
+    }
+
+
+    public function addArticle($user_id, $titre, $slug, $contenu, $statut) : bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "INSERT INTO Articles(utilisateur_id, titre, slug, contenu, statut, date_creation) 
+            VALUES(:utilisateur_id, :titre, :slug, :contenu, :statut, NOW())";
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':utilisateur_id' => $user_id,
+                ':titre' => $titre,
+                ':slug' => $slug,
+                ':contenu' => $contenu,
+                ':statut' => $statut,
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            die("ERREUR SQL : " . $e->getMessage());
         }
     }
 

@@ -22,6 +22,7 @@ class ManageArticlesController extends Controller
         echo $this->twig->render('manageArticles.twig', [
             'currentPage' => 'manageArticles.twig',
             'articlesList' => $articlesList,
+            'user_id' => $user_id,
             'titre_doc' => 'Gestion des articles',
         ]);
     }
