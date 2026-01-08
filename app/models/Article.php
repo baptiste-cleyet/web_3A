@@ -179,12 +179,12 @@ class Article
     }
 
 
-    public function addArticle($user_id, $titre, $slug, $contenu, $statut) : bool
+    public function addArticle($user_id, $titre, $slug, $contenu, $image_name, $statut) : bool
     {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "INSERT INTO Articles(utilisateur_id, titre, slug, contenu, statut, date_creation) 
-            VALUES(:utilisateur_id, :titre, :slug, :contenu, :statut, NOW())";
+        $sql = "INSERT INTO Articles(utilisateur_id, titre, slug, contenu, image_une, statut, date_creation) 
+            VALUES(:utilisateur_id, :titre, :slug, :contenu, :image, :statut, NOW())";
 
         $stmt = $pdo->prepare($sql);
 
@@ -194,6 +194,7 @@ class Article
                 ':titre' => $titre,
                 ':slug' => $slug,
                 ':contenu' => $contenu,
+                ':image' => $image_name,
                 ':statut' => $statut,
             ]);
             return true;
@@ -202,33 +203,50 @@ class Article
         }
     }
 
-    public function editDraft($article_id, $titre, $slug, $contenu, $statut) : bool
+    public function editDraft($id, $titre, $slug, $contenu, $image, $statut)
     {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "UPDATE Articles SET
-                    titre = :titre,
-                    slug = :slug,
-                    contenu = :contenu,
-                    statut = :statut,
-                    date_mise_a_jour = NOW()
-                 WHERE id = :id";
+        // Note : On met à jour 'image' directement avec la valeur reçue
+        $sql = "UPDATE articles SET 
+            titre = :titre, 
+            slug = :slug, 
+            contenu = :contenu, 
+            image_une = :image, 
+            statut = :statut, 
+            date_mise_a_jour = NOW() 
+            WHERE id = :id";
 
         $stmt = $pdo->prepare($sql);
 
         try {
             $stmt->execute([
+                ':id' => $id,
                 ':titre' => $titre,
                 ':slug' => $slug,
                 ':contenu' => $contenu,
-                ':statut' => $statut,
-                ':id' => $article_id,
+                ':image' => $image,
+                ':statut' => $statut
             ]);
             return true;
         } catch (PDOException $e) {
-            die("ERREUR SQL : " . $e->getMessage());
+            Logger::getInstance()->log("Erreur SQL article : ($id) " . $e);
+            return false;
         }
     }
+
+
+    public function getAllArticles(){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "SELECT * FROM Articles;";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     public function deleteArticle($article_id){
         $pdo = Database::getInstance()->getConnection();

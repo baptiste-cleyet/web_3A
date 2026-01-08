@@ -5,9 +5,6 @@
 
 {% block content %}
     <div x-data="{ openAddModal: false }" x-cloak>
-
-
-
         <div class="container mt-4">
             <button class="btn btn-primary" @click="openAddModal = true">
                 <i class="bi bi-plus-circle"></i> Rédiger un nouvel article
@@ -23,13 +20,19 @@
                         <button type="button" class="btn-close" @click="openAddModal = false"></button>
                     </div>
 
-                    <form action="app.php?action=newArticle" method="POST">
+                    <form action="app.php?action=newArticle" method="POST" enctype="multipart/form-data">
                         <input type="hidden" value="{{ user_id }}" name="id"/>
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label">Titre</label>
                                 <textarea class="form-control" name="titre" rows="2" required></textarea>
                             </div>
+                            <hr>
+                            <div class="mb-3">
+                                <label class="form-label">Image de l'article</label><br>
+                                <input type="file" name="file" id="file" class="form-control" accept="image/png, image/jpeg">
+                            </div>
+                            <hr>
                             <div class="mb-3">
                                 <label class="form-label">Contenu</label>
                                 <textarea class="form-control" name="contenu" rows="8" required></textarea>
@@ -97,13 +100,33 @@
                                     <button type="button" class="btn-close" @click="openEditModal = false"></button>
                                 </div>
 
-                                <form action="app.php?action=editDraft" method="POST">
+                                <form action="app.php?action=editDraft" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" value="{{ article.id }}" name="id_article"/>
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label class="form-label">Titre</label>
                                             <textarea class="form-control" name="titre" rows="2" required>{{ article.titre }}</textarea>
                                         </div>
+                                        <hr>
+                                        <div class="mb-3">
+                                            <label class="form-label">Modifier l'image de l'article</label><br>
+
+                                            {% if article.image_une is defined and article.image_une is not null %}
+                                                <div class="d-flex align-items-center mb-2 gap-3">
+                                                    <img src="static/img/{{ article.image_une }}" alt="Actuelle" style="height: 60px; border-radius: 4px;">
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="delete_image" value="1" id="delImg">
+                                                        <label class="form-check-label text-danger" for="delImg">
+                                                            <i class="bi bi-trash"></i> Supprimer l'image actuelle
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            <input type="file" name="file" id="file" class="form-control" accept="image/png, image/jpeg">
+                                            <div class="form-text text-muted">Laissez vide pour conserver l'image actuelle.</div>
+                                        </div>
+                                        <hr>
                                         <div class="mb-3">
                                             <label class="form-label">Contenu</label>
                                             <textarea class="form-control" name="contenu" rows="8" required>{{ article.contenu }}</textarea>

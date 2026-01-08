@@ -69,6 +69,7 @@ class ActionsController extends Controller
 
     public function editDraft(){
         $user = SessionManager::getInstance()->get('user');
+        if (!$user) return false;
         $id_user = $user['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -76,29 +77,72 @@ class ActionsController extends Controller
             $titre = $_POST['titre'] ?? null;
             $contenu = $_POST['contenu'] ?? null;
             $article_id = $_POST['id_article'];
-
             $slug = $this->generateSlug($titre);
             $statut = ($etat === 'publie') ? 'Publié' : 'Brouillon';
+
+
+            $newImage = $this->uploadImage();
+
+            $deleteRequested = isset($_POST['delete_image']);
+
+            if ($newImage) {
+                $imageToSave = $newImage;
+            } elseif ($deleteRequested) {
+                $imageToSave = null;
+            } else {
+                $articleModel = new Article();
+                $currentArticle = $articleModel->articleById($article_id);
+                $imageToSave = $currentArticle['image'] ?? null;
+            }
+
 
             $permissionModel = new Permission();
             $articleModel = new Article();
 
             if ($etat === 'publie') {
                 if ($permissionModel->checkPermission($id_user, 'article_creer') && $permissionModel->checkPermission($id_user, 'article_publier')) {
-                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, 'Publié');
+                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, $imageToSave, 'Publié');
                 }
                 elseif ($permissionModel->checkPermission($id_user, 'article_creer')) {
-                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, 'Brouillon');
+                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, $imageToSave, 'Brouillon');
                 }
             }
             else {
                 if ($permissionModel->checkPermission($id_user, 'article_creer')) {
-                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, 'Brouillon');
+                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, $imageToSave, 'Brouillon');
                 }
             }
             return false;
         }
+    }
 
+    private function uploadImage()
+    {
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === 0) {
+
+            $targetDir = __DIR__ . '/../../static/img/';
+
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            $fileInfo = pathinfo($_FILES['file']['name']);
+            $extension = strtolower($fileInfo['extension']);
+
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array($extension, $allowedExtensions)) {
+                return null;
+            }
+
+            $newFileName = 'article_' . uniqid() . '.' . $extension;
+            $targetFilePath = $targetDir . $newFileName;
+
+            if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFilePath)) {
+                return $newFileName;
+            }
+        }
+
+        return null;
     }
 
 
@@ -114,6 +158,7 @@ class ActionsController extends Controller
             $etat = $_POST['etat'] ?? 'brouillon';
             $titre = $_POST['titre'] ?? null;
             $contenu = $_POST['contenu'] ?? null;
+            $imageName = $this->uploadImage();
 
             $slug = $this->generateSlug($titre);
             $statut = ($etat === 'publie') ? 'Publié' : 'Brouillon';
@@ -123,15 +168,15 @@ class ActionsController extends Controller
 
             if ($etat === 'publie') {
                 if ($permissionModel->checkPermission($id_user, 'article_creer') && $permissionModel->checkPermission($id_user, 'article_publier')) {
-                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, 'Publié');
+                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, $imageName, 'Publié');
                 }
                 elseif ($permissionModel->checkPermission($id_user, 'article_creer')) {
-                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, 'Brouillon');
+                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, $imageName, 'Brouillon');
                 }
             }
             else {
                 if ($permissionModel->checkPermission($id_user, 'article_creer')) {
-                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, 'Brouillon');
+                    return $articleModel->addArticle($id_user, $titre, $slug, $contenu, $imageName, 'Brouillon');
                 }
             }
             return false;
