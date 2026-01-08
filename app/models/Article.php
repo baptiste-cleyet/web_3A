@@ -202,6 +202,70 @@ class Article
         }
     }
 
+    public function editDraft($article_id, $titre, $slug, $contenu, $statut) : bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "UPDATE Articles SET
+                    titre = :titre,
+                    slug = :slug,
+                    contenu = :contenu,
+                    statut = :statut,
+                    date_mise_a_jour = NOW()
+                 WHERE id = :id";
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':titre' => $titre,
+                ':slug' => $slug,
+                ':contenu' => $contenu,
+                ':statut' => $statut,
+                ':id' => $article_id,
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            die("ERREUR SQL : " . $e->getMessage());
+        }
+    }
+
+    public function deleteArticle($article_id){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "DELETE FROM Articles WHERE id = :id";
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':id' => $article_id,
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            die("ERREUR SQL : " . $e->getMessage());
+        }
+    }
+
+
+    public function postDraft($article_id){
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = "UPDATE Articles SET statut = 'Publié'
+        WHERE id = :id";
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':id' => $article_id,
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            die("ERREUR SQL : " . $e->getMessage());
+        }
+    }
+
     public function countWaitingComment()
     {
         $pdo = Database::getInstance()->getConnection();

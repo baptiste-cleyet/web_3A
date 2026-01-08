@@ -7,6 +7,7 @@ require_once __DIR__.'/../models/Role.php';
 require_once __DIR__.'/../models/Comment.php';
 require_once __DIR__.'/../models/Permission.php';
 require_once __DIR__.'/../models/Article.php';
+require_once __DIR__.'/Logger.php';
 
 class ActionsController extends Controller
 {
@@ -54,7 +55,7 @@ class ActionsController extends Controller
         // Remplace tout ce qui n'est pas une lettre ou un chiffre par un tiret
         $text = preg_replace('/[^a-z0-9]+/', '-', $text);
 
-        // Enleve les tirets en début et fin de chaîne (trim)
+        // Enleve les tirets en début et fin de chaîne
         $text = trim($text, '-');
 
         // Valeur par défaut (unique grace au temps) si la chaine est vide
@@ -64,6 +65,42 @@ class ActionsController extends Controller
 
         return $text;
     }
+
+
+    public function editDraft(){
+        $user = SessionManager::getInstance()->get('user');
+        $id_user = $user['id'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $etat = $_POST['etat'] ?? 'brouillon';
+            $titre = $_POST['titre'] ?? null;
+            $contenu = $_POST['contenu'] ?? null;
+            $article_id = $_POST['id_article'];
+
+            $slug = $this->generateSlug($titre);
+            $statut = ($etat === 'publie') ? 'Publié' : 'Brouillon';
+
+            $permissionModel = new Permission();
+            $articleModel = new Article();
+
+            if ($etat === 'publie') {
+                if ($permissionModel->checkPermission($id_user, 'article_creer') && $permissionModel->checkPermission($id_user, 'article_publier')) {
+                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, 'Publié');
+                }
+                elseif ($permissionModel->checkPermission($id_user, 'article_creer')) {
+                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, 'Brouillon');
+                }
+            }
+            else {
+                if ($permissionModel->checkPermission($id_user, 'article_creer')) {
+                    return $articleModel->editDraft($article_id, $titre, $slug, $contenu, 'Brouillon');
+                }
+            }
+            return false;
+        }
+
+    }
+
 
     public function newArticle()
     {
@@ -101,6 +138,19 @@ class ActionsController extends Controller
         }
     }
 
+
+    public function deleteDraft($article_id){
+        $articleModel = new Article();
+        return $articleModel->deleteArticle($article_id);
+    }
+
+
+    public function postDraft($article_id){
+        $articleModel = new Article();
+        return $articleModel->postDraft($article_id);
+    }
+
+
     public function rejectComment($id_comment, $id_user)
     {
         $permissionModel = new Permission();
@@ -123,6 +173,9 @@ class ActionsController extends Controller
 
         return;
     }
+
+
+
 
     public function updateRoles()
     {
@@ -167,6 +220,7 @@ class ActionsController extends Controller
 
             // Envoi du mail
             $success = $this->sendEmail('Commentaire en attente de validation', $message, $this->commentNotificationEmail);
+            Logger::getInstance()->log($success);
         }
 
         return [$id, $success];

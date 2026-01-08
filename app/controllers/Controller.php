@@ -91,6 +91,7 @@ abstract class Controller
             $mail->Username = $_ENV['MAIL_USERNAME'];
             $mail->Password = $_ENV['MAIL_PASSWORD'];
             $mail->Port = $_ENV['MAIL_PORT'];
+            Logger::getInstance()->log($_ENV['MAIL_HOST']);
             // Destinataires
             $mail->setFrom('noreply@monblog.dev', 'Blog web 3A');
             $mail->addAddress($to);
@@ -100,9 +101,7 @@ abstract class Controller
             $mail->Subject = $subject;
             $mail->Body = $body;
             $mail->CharSet = 'UTF-8';
-
             $mail->send();
-
             return true;
         } catch (Exception $e) {
             Logger::getInstance()->log("Erreur de phpmailer : $e");

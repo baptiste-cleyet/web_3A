@@ -42,6 +42,26 @@ if (!empty($action)) {
             header('Location: app.php?route=manageArticles');
             exit;
 
+        case 'deleteDraft':
+            require_once 'app/controllers/ActionsController.php';
+            $article_id = $_GET['id'];
+            (new ActionsController())->deleteDraft($article_id);
+            header('Location: app.php?route=manageArticles');
+            exit;
+
+        case 'postDraft':
+            require_once 'app/controllers/ActionsController.php';
+            $article_id = $_GET['id'];
+            (new ActionsController())->postDraft($article_id);
+            header('Location: app.php?route=manageArticles');
+            exit;
+
+        case 'editDraft':
+            require_once 'app/controllers/ActionsController.php';
+            (new ActionsController())->editDraft();
+            header('Location: app.php?route=manageArticles');
+            exit;
+
         case 'restoreArticle':
             require_once 'app/controllers/ActionsController.php';
             $archive_id = $_GET['id'];
