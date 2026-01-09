@@ -7,6 +7,9 @@ error_reporting(E_ALL);
 /* inclure l'autoloader */
 require_once 'vendor/autoload.php';
 
+require_once 'app/controllers/SessionManager.php';
+require_once 'app/models/Permission.php';
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -111,6 +114,8 @@ if (!empty($action)) {
 }
 
 $route = $_GET['route'] ?? 'home';
+$user = SessionManager::getInstance()->get('user');
+$id = $user['id'] ?? null;
 
 switch ($route) {
     case 'signup':
@@ -138,11 +143,19 @@ switch ($route) {
         break;
 
     case 'usersList' :
+        if ($id === null || !(new Permission())->checkPermission($id, 'utilisateur_gerer')) {
+            header('Location: app.php?route=home');
+            exit;
+        }
         require_once 'app/controllers/UsersListController.php';
         (new UsersListController())->index();
         break;
 
     case 'manageComments' :
+        if ($id === null || !(new Permission())->checkPermission($id, 'commentaire_gerer')) {
+            header('Location: app.php?route=home');
+            exit;
+        }
         require_once 'app/controllers/ManageCommentController.php';
         (new ManageCommentController())->index();
         break;
