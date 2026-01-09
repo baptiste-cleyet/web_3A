@@ -2,6 +2,7 @@
 
 require_once __DIR__.'/../controllers/DataBase.php';
 require_once __DIR__.'/../controllers/Logger.php';
+require_once __DIR__.'/Tag.php';
 
 class Article
 {
@@ -73,11 +74,65 @@ class Article
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function addTag($article_id, $tag_id)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        $sql = 'INSERT INTO article_tag (article_id, tag_id)
+                VALUES(:id_article, :id_tag)';
+
+        $stmt = $pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':id_article' => $article_id,
+                ':id_tag' => $tag_id,
+            ]);
+
+            return true;
+        } catch (PDOException $e) {
+            Logger::getInstance()->log("Erreur SQL addTag : " . $e);
+            return false;
+        }
+    }
+
+
+    public function updateArticleTags($articleId, $newTagsIds)
+    {
+        $pdo = Database::getInstance()->getConnection();
+
+        try {
+            $pdo->beginTransaction();
+
+            $sqlDelete = "DELETE FROM article_tag WHERE article_id = :article_id";
+            $stmtDelete = $pdo->prepare($sqlDelete);
+            $stmtDelete->execute([':article_id' => $articleId]);
+
+            if (!empty($newTagsIds)) {
+                $sqlInsert = "INSERT INTO article_tag (article_id, tag_id) VALUES (:article_id, :tag_id)";
+                $stmtInsert = $pdo->prepare($sqlInsert);
+
+                foreach ($newTagsIds as $tagId) {
+                    $stmtInsert->execute([
+                        ':article_id' => $articleId,
+                        ':tag_id' => intval($tagId)
+                    ]);
+                }
+            }
+            $pdo->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            return false;
+        }
+    }
+
     public function articleTags($id)
     {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = 'SELECT nom_tag FROM tags
+        $sql = 'SELECT tags.nom_tag, tags.id FROM tags
         JOIN article_tag ON article_tag.tag_id = tags.id
         JOIN articles ON articles.id = article_tag.article_id
         WHERE articles.id = :id;';
@@ -128,6 +183,7 @@ class Article
 
             return true;
         } catch (PDOException $e) {
+            Logger::getInstance()->log("Erreur SQL addComment : " . $e);
             return false;
         }
     }
@@ -179,12 +235,12 @@ class Article
     }
 
 
-    public function addArticle($user_id, $titre, $slug, $contenu, $image_name, $statut) : bool
+    public function addArticle($user_id, $titre, $slug, $contenu, $statut, $image = null, $tags = []) : bool
     {
         $pdo = Database::getInstance()->getConnection();
 
-        $sql = "INSERT INTO Articles(utilisateur_id, titre, slug, contenu, image_une, statut, date_creation) 
-            VALUES(:utilisateur_id, :titre, :slug, :contenu, :image, :statut, NOW())";
+        $sql = "INSERT INTO articles(utilisateur_id, titre, slug, contenu, statut, date_creation, image_une) 
+            VALUES(:utilisateur_id, :titre, :slug, :contenu, :statut, NOW(), :image)";
 
         $stmt = $pdo->prepare($sql);
 
@@ -194,12 +250,23 @@ class Article
                 ':titre' => $titre,
                 ':slug' => $slug,
                 ':contenu' => $contenu,
-                ':image' => $image_name,
                 ':statut' => $statut,
+                ':image' => $image,
             ]);
+
+            $newArticleId = $pdo->lastInsertId();
+
+            if (!empty($tags) && $newArticleId) {
+                foreach ($tags as $tag) {
+                    $this->addTag($newArticleId, $tag);
+                }
+            }
+
             return true;
+
         } catch (PDOException $e) {
-            die("ERREUR SQL : " . $e->getMessage());
+            die("Erreur SQL : " . $e->getMessage());
+            return false;
         }
     }
 

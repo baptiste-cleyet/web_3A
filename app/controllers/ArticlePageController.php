@@ -25,6 +25,7 @@ class ArticlePage extends Controller
             'titre_doc' => $article['titre'],
             'currentPage' => 'articlePage.twig',
             'article' => $article,
+            'user_id' => $user['id'],
             'auteur' => $author,
             'tags' => $tags,
             'comments' => $comments,

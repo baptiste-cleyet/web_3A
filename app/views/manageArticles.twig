@@ -1,6 +1,5 @@
 {% extends "head.twig" %}
 {% block stylesheets %}
-
 {% endblock %}
 
 {% block content %}
@@ -14,14 +13,11 @@
         <div class="modal" tabindex="-1" x-show="openAddModal" style="display: block; background-color: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content" @click.away="openAddModal = false">
-
                     <div class="modal-header">
                         <h5 class="modal-title">Rédiger un nouvel article</h5>
                         <button type="button" class="btn-close" @click="openAddModal = false"></button>
                     </div>
-
                     <form action="app.php?action=newArticle" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" value="{{ user_id }}" name="id"/>
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label">Titre</label>
@@ -30,129 +26,150 @@
                             <hr>
                             <div class="mb-3">
                                 <label class="form-label">Image de l'article</label><br>
-                                <input type="file" name="file" id="file" class="form-control" accept="image/png, image/jpeg">
+                                <input type="file" name="file" class="form-control" accept="image/png, image/jpeg">
                             </div>
                             <hr>
                             <div class="mb-3">
                                 <label class="form-label">Contenu</label>
                                 <textarea class="form-control" name="contenu" rows="8" required></textarea>
                             </div>
-                        </div>
 
+                            <div class="mb-3" x-data="{ selectedTags: [] }">
+                                <label class="form-label">Tags associés</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for tag in tagsList %}
+                                        <span class="badge rounded-pill cursor-pointer user-select-none"
+                                              style="cursor: pointer; transition: all 0.2s;"
+                                              :class="selectedTags.includes({{ tag.id }}) ? 'bg-primary text-white border-primary' : 'bg-transparent text-secondary border border-secondary'"
+                                              @click="if(selectedTags.includes({{ tag.id }})) { selectedTags = selectedTags.filter(id => id !== {{ tag.id }}) } else { selectedTags.push({{ tag.id }}) }">
+                                            <i x-show="selectedTags.includes({{ tag.id }})" class="bi bi-check-lg me-1"></i>
+                                            {{ tag.nom_tag }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                                <template x-for="tagId in selectedTags">
+                                    <input type="hidden" name="tags[]" :value="tagId">
+                                </template>
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="openAddModal = false">Annuler</button>
-
-                            <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white">
-                                <i class="bi bi-save"></i> Sauvegarder en brouillon
-                            </button>
-
-                            <button type="submit" name="etat" value="publie" class="btn btn-primary">
-                                <i class="bi bi-send"></i> Publier maintenant
-                            </button>
+                            <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white"><i class="bi bi-save"></i> Sauvegarder en brouillon</button>
+                            <button type="submit" name="etat" value="publie" class="btn btn-primary"><i class="bi bi-send"></i> Publier maintenant</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
-    <br>
-    <hr>
+
+    <br><hr>
 
     <h1 class="px-5">Brouillons</h1>
-    <div class="album py-5" x-data="{openEditModal: false }" x-cloak>
+
+    <div class="album py-5">
         <div class="container">
             <div class="row">
                 {% for article in articlesList %}
-                    {% if article.statut=='Brouillon' %}
-                        <div class="col-6 col-sm-4 col-md-3">
+                    {% if article.statut == 'Brouillon' %}
+
+                        <div class="col-6 col-sm-4 col-md-3" x-data="{ openEditModal: false }" x-cloak>
+
                             <div class="card mb-4 shadow-sm">
                                 {% if article.image_une != null %}
-                                    <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article"/>
+                                    <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article" style="height: 200px; object-fit: cover;"/>
                                 {% else %}
-                                    <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article"/>
+                                    <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article" style="height: 200px; object-fit: cover;"/>
                                 {% endif %}
                                 <div class="card-body">
-                                    <p class="card-text">
-                                        {{ article.titre }}
-                                    </p>
+                                    <p class="card-text fw-bold text-truncate">{{ article.titre }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a type="button" class="btn btn-outline-success" href="app.php?action=postDraft&article&id={{ article.id }}">
-                                            Publier
-                                        </a>
-                                        <button class="btn btn-outline-warning" @click="openEditModal = true">
-                                            Éditer
-                                        </button>
-                                        <a type="button" class="btn btn-outline-danger" href="app.php?action=deleteDraft&id={{ article.id }}">
-                                            Supprimer
-                                        </a>
+                                        <a type="button" class="btn btn-sm btn-outline-success" href="app.php?action=postDraft&article&id={{ article.id }}">Publier</a>
+                                        <button class="btn btn-sm btn-outline-warning" @click="openEditModal = true">Éditer</button>
+                                        <a type="button" class="btn btn-sm btn-outline-danger" href="app.php?action=deleteDraft&id={{ article.id }}">Supprimer</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal" tabindex="-1" x-show="openEditModal" style="display: block; background-color: rgba(0,0,0,0.5);">
+                                <div class="modal-dialog modal-xl" @click.away="openEditModal = false">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Modifier le brouillon</h5>
+                                            <button type="button" class="btn-close" @click="openEditModal = false"></button>
+                                        </div>
+
+                                        <form action="app.php?action=editDraft" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" value="{{ article.id }}" name="id_article"/>
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Titre</label>
+                                                    <textarea class="form-control" name="titre" rows="2" required>{{ article.titre }}</textarea>
+                                                </div>
+                                                <hr>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Modifier l'image</label><br>
+                                                    {% if article.image_une is defined and article.image_une is not null %}
+                                                        <div class="d-flex align-items-center mb-2 gap-3 p-2 border rounded bg-light">
+                                                            <img src="static/img/{{ article.image_une }}" alt="Actuelle" style="height: 60px; border-radius: 4px;">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" name="delete_image" value="1" id="delImg{{ article.id }}">
+                                                                <label class="form-check-label text-danger cursor-pointer" for="delImg{{ article.id }}">
+                                                                    <i class="bi bi-trash"></i> Supprimer l'image actuelle
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <input type="file" name="file" class="form-control" accept="image/png, image/jpeg">
+                                                    <div class="form-text text-muted">Laissez vide pour conserver l'image actuelle.</div>
+                                                </div>
+                                                <hr>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contenu</label>
+                                                    <textarea class="form-control" name="contenu" rows="8" required>{{ article.contenu }}</textarea>
+                                                </div>
+
+                                                <div class="mb-3" x-data="{ selectedTags: {{ article.tags_ids|json_encode|default('[]') }} }">
+                                                    <label class="form-label">Tags associés</label>
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        {% for tag in tagsList %}
+                                                            <span class="badge rounded-pill cursor-pointer user-select-none"
+                                                                  style="cursor: pointer; transition: all 0.2s;"
+                                                                  :class="selectedTags.includes({{ tag.id }}) ? 'bg-primary text-white border-primary' : 'bg-transparent text-secondary border border-secondary'"
+                                                                  @click="if(selectedTags.includes({{ tag.id }})) { selectedTags = selectedTags.filter(id => id !== {{ tag.id }}) } else { selectedTags.push({{ tag.id }}) }">
+                                                                <i x-show="selectedTags.includes({{ tag.id }})" class="bi bi-check-lg me-1"></i>
+                                                                {{ tag.nom_tag }}
+                                                            </span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <template x-for="tagId in selectedTags">
+                                                        <input type="hidden" name="tags[]" :value="tagId">
+                                                    </template>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" @click="openEditModal = false">Annuler</button>
+                                                <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white"><i class="bi bi-save"></i> Sauvegarder</button>
+                                                <button type="submit" name="etat" value="publie" class="btn btn-primary"><i class="bi bi-send"></i> Publier</button>
+                                            </div>
+                                        </form>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     {% endif %}
-                    <div class="modal" tabindex="-1" x-show="openEditModal" style="display: block; background-color: rgba(0,0,0,0.5);">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Brouillon</h5>
-                                    <button type="button" class="btn-close" @click="openEditModal = false"></button>
-                                </div>
-
-                                <form action="app.php?action=editDraft" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" value="{{ article.id }}" name="id_article"/>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Titre</label>
-                                            <textarea class="form-control" name="titre" rows="2" required>{{ article.titre }}</textarea>
-                                        </div>
-                                        <hr>
-                                        <div class="mb-3">
-                                            <label class="form-label">Modifier l'image de l'article</label><br>
-
-                                            {% if article.image_une is defined and article.image_une is not null %}
-                                                <div class="d-flex align-items-center mb-2 gap-3">
-                                                    <img src="static/img/{{ article.image_une }}" alt="Actuelle" style="height: 60px; border-radius: 4px;">
-
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="delete_image" value="1" id="delImg">
-                                                        <label class="form-check-label text-danger" for="delImg">
-                                                            <i class="bi bi-trash"></i> Supprimer l'image actuelle
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                            <input type="file" name="file" id="file" class="form-control" accept="image/png, image/jpeg">
-                                            <div class="form-text text-muted">Laissez vide pour conserver l'image actuelle.</div>
-                                        </div>
-                                        <hr>
-                                        <div class="mb-3">
-                                            <label class="form-label">Contenu</label>
-                                            <textarea class="form-control" name="contenu" rows="8" required>{{ article.contenu }}</textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" @click="openEditModal = false">Annuler</button>
-
-                                        <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white">
-                                            <i class="bi bi-save"></i> Sauvegarder les changements
-                                        </button>
-
-                                        <button type="submit" name="etat" value="publie" class="btn btn-primary">
-                                            <i class="bi bi-send"></i> Publier maintenant
-                                        </button>
-                                    </div>
-                                </form>
-
-                            </div>
-                        </div>
-                    </div>
                 {% endfor %}
             </div>
         </div>
     </div>
+
     <hr>
     <h1 class="px-5">Articles publiés</h1>
     <div class="album py-5">
@@ -163,21 +180,15 @@
                         <div class="col-6 col-sm-4 col-md-3">
                             <div class="card mb-4 shadow-sm">
                                 {% if article.image_une != null %}
-                                    <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article"/>
+                                    <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article" style="height: 200px; object-fit: cover;"/>
                                 {% else %}
-                                    <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article"/>
+                                    <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article" style="height: 200px; object-fit: cover;"/>
                                 {% endif %}
                                 <div class="card-body">
-                                    <p class="card-text">
-                                        {{ article.titre }}
-                                    </p>
+                                    <p class="card-text fw-bold text-truncate">{{ article.titre }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a type="button" class="btn btn-outline-primary" href="app.php?route=article&id={{ article.id }}">
-                                            Voir
-                                        </a>
-                                        <a type="button" class="btn btn-outline-danger" href="app.php?action=archiveArticle&id={{ article.id }}">
-                                            Archiver
-                                        </a>
+                                        <a type="button" class="btn btn-sm btn-outline-primary" href="app.php?route=article&id={{ article.id }}">Voir</a>
+                                        <a type="button" class="btn btn-sm btn-outline-danger" href="app.php?action=archiveArticle&id={{ article.id }}">Archiver</a>
                                     </div>
                                 </div>
                             </div>
@@ -187,6 +198,7 @@
             </div>
         </div>
     </div>
+
     <hr>
     <h1 class="px-5">Articles archivés</h1>
     <div class="album py-5">
@@ -197,21 +209,15 @@
                         <div class="col-6 col-sm-4 col-md-3">
                             <div class="card mb-4 shadow-sm">
                                 {% if article.image_une != null %}
-                                    <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article"/>
+                                    <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article" style="height: 200px; object-fit: cover;"/>
                                 {% else %}
-                                    <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article"/>
+                                    <img class="card-img-top" src="static/img/empty_article.jpg" alt="Article" style="height: 200px; object-fit: cover;"/>
                                 {% endif %}
                                 <div class="card-body">
-                                    <p class="card-text">
-                                        {{ article.titre }}
-                                    </p>
+                                    <p class="card-text fw-bold text-truncate">{{ article.titre }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a type="button" class="btn btn-outline-primary" href="app.php?route=article&id={{ article.id }}">
-                                            Voir
-                                        </a>
-                                        <a type="button" class="btn btn-outline-success" href="app.php?action=restoreArticle&id={{ article.id }}">
-                                            Restaurer
-                                        </a>
+                                        <a type="button" class="btn btn-sm btn-outline-primary" href="app.php?route=article&id={{ article.id }}">Voir</a>
+                                        <a type="button" class="btn btn-sm btn-outline-success" href="app.php?action=restoreArticle&id={{ article.id }}">Restaurer</a>
                                     </div>
                                 </div>
                             </div>

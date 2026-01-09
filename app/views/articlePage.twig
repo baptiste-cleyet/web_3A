@@ -6,15 +6,13 @@
 	{% if error %}
 		<div class="alert alert-danger alert-dismissible" role="alert">
 			<i class="bi bi-exclamation-triangle"></i>
-			Le commentaire ne s'est pas
-																																																																																								ajouté !
+			Le commentaire ne s'est pas ajouté !
 			<a type="button" class="btn-close" href="app.php?route=article&id={{ article.id }}"></a>
 		</div>
 	{% elseif addComment %}
 		<div class="alert alert-success alert-dismissible" role="alert">
 			<i class="bi bi-info-circle"></i>
-			Le commentaire est désormais en attente de
-																																																																																								validation.
+			Le commentaire est désormais en attente de validation.
 			<a type="button" class="btn-close" href="app.php?route=article&id={{ article.id }}"></a>
 		</div>
 	{% endif %}
@@ -35,18 +33,23 @@
 		{{ article.contenu }}
 		{% endapply %}
 
-		<div>
-			<hr/>
-			<h4>
-				<i class="bi bi-tag"></i>
-				Tags</h4>
-			{% set tags_names = [] %}
-			{% for tag in tags %}
-				{% set tags_names =
-		tags_names|merge([tag.nom_tag]) %}
-			{% endfor %}
-			{{ tags_names|join(' - ') }}
-		</div>
+        <div class="mt-4 mb-4">
+            <hr class="mb-4"/>
+
+            <h5 class="mb-3 text-muted">
+                <i class="bi bi-tags-fill"></i> Tags
+            </h5>
+
+            <div class="d-flex flex-wrap gap-2">
+                {% for tag in tags %}
+                    <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 fs-6 px-3 py-2">
+                #{{ tag.nom_tag }}
+            </span>
+                {% else %}
+                    <span class="text-muted fst-italic small">Aucun tag pour cet article.</span>
+                {% endfor %}
+            </div>
+        </div>
 
 		<br/>
 		<hr/>
