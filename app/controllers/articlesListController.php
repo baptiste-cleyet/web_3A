@@ -17,6 +17,8 @@ class ArticlesListController extends Controller
         $articlesModel = new Article();
         $tagsModel = new Tag();
         $tags = $tagsModel->getAllTags();
+        $tags = array_merge([['id' => null, 'nom_tag' => 'Tous']], $tags);
+
         if ($tag !== null) {
             $articlesList = $tagsModel->articlesByTag($tag);
         } else {

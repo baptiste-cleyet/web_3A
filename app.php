@@ -131,6 +131,9 @@ switch ($route) {
     case 'articlesList':
         require_once 'app/controllers/ArticlesListController.php';
         $tag = $_GET['tag'] ?? null;
+        if ($tag == '') {
+            $tag = null;
+        }
         (new ArticlesListController())->index($tag);
         break;
 
