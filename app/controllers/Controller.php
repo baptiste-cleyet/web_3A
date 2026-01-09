@@ -58,7 +58,7 @@ abstract class Controller
             'gestionArticles' => [
                 'url' => 'app.php?route=manageArticles',
                 'label' => 'Gestion articles',
-                'disabled' => false,
+                'disabled' => $user_id == null,
                 'page' => 'manageArticles.twig',
             ],
             'gestionUtilisateurs' => [
@@ -102,6 +102,7 @@ abstract class Controller
             $mail->Body = $body;
             $mail->CharSet = 'UTF-8';
             $mail->send();
+
             return true;
         } catch (Exception $e) {
             Logger::getInstance()->log("Erreur de phpmailer : $e");

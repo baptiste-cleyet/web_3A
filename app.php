@@ -164,7 +164,11 @@ switch ($route) {
         (new ManageCommentController())->index();
         break;
 
-    case 'manageArticles' :
+    case '  ' :
+        if ($id === null) {
+            header('Location: app.php?route=home');
+            exit;
+        }
         require_once 'app/controllers/ManageArticlesController.php';
         (new ManageArticlesController())->index();
         break;
