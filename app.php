@@ -164,7 +164,7 @@ switch ($route) {
         (new ManageCommentController())->index();
         break;
 
-    case '  ' :
+    case 'manageArticles' :
         if ($id === null) {
             header('Location: app.php?route=home');
             exit;
