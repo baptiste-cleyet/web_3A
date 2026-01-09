@@ -1,9 +1,10 @@
 <?php
 
 require_once __DIR__.'/SessionManager.php';
+require_once __DIR__.'/Controller.php';
 require_once __DIR__.'/../models/Article.php';
 require_once __DIR__.'/../models/Permission.php';
-require_once __DIR__.'/Controller.php';
+require_once __DIR__.'/../models/Tag.php';
 class ArticlesListController extends Controller
 {
     public function __construct()
@@ -11,15 +12,22 @@ class ArticlesListController extends Controller
         parent::__construct();
     }
 
-    public function index()
+    public function index($tag)
     {
         $articlesModel = new Article();
-        $articlesList = $articlesModel->lastArticles(9);
+        $tagsModel = new Tag();
+        $tags = $tagsModel->getAllTags();
+        if ($tag !== null) {
+            $articlesList = $tagsModel->articlesByTag($tag);
+        } else {
+            $articlesList = $articlesModel->lastArticles(9);
+        }
 
         echo $this->twig->render('articlesList.twig', [
             'titre_doc' => 'Articles récents',
             'currentPage' => 'articlesList.twig',
             'articlesList' => $articlesList,
+            'tags' => $tags,
         ]);
     }
 }

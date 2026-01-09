@@ -130,7 +130,8 @@ switch ($route) {
 
     case 'articlesList':
         require_once 'app/controllers/ArticlesListController.php';
-        (new ArticlesListController())->index();
+        $tag = $_GET['tag'] ?? null;
+        (new ArticlesListController())->index($tag);
         break;
 
     case 'article':
@@ -167,12 +168,12 @@ switch ($route) {
 
     case 'home':
         require_once 'app/controllers/ArticlesListController.php';
-        (new ArticlesListController())->index();
+        (new ArticlesListController())->index(null);
         break;
 
     default:
         require_once 'app/controllers/ArticlesListController.php';
-        (new ArticlesListController())->index();
+        (new ArticlesListController())->index(null);
         break;
 }
 

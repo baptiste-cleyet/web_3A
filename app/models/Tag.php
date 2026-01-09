@@ -17,7 +17,8 @@ class Tag
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAllTags(){
+    public function getAllTags()
+    {
         $pdo = DataBase::getInstance()->getConnection();
 
         $sql = 'SELECT * FROM Tags ORDER BY nom_tag ASC';
@@ -27,11 +28,9 @@ class Tag
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    public function newTag($tag_name, $slug){
+    public function newTag($tag_name, $slug)
+    {
         $pdo = DataBase::getInstance()->getConnection();
-
-
 
         $sql = 'INSERT INTO Tags (nom_tag, slug)
         VALUES (:nom_tag, :slug)';
@@ -43,5 +42,18 @@ class Tag
         ]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function articlesByTag($id_tag)
+    {
+        $pdo = DataBase::getInstance()->getConnection();
+
+        $sql = 'SELECT * FROM articles
+        JOIN article_tag ON article_tag.article_id = articles.id
+        WHERE article_tag.tag_id = :id_tag';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':id_tag' => $id_tag]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
