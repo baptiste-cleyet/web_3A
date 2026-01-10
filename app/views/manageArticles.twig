@@ -11,14 +11,18 @@
         </div>
 
         <div class="modal" tabindex="-1" x-show="openAddModal" style="display: block; background-color: rgba(0,0,0,0.5);">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content" @click.away="openAddModal = false">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Rédiger un nouvel article</h5>
-                        <button type="button" class="btn-close" @click="openAddModal = false"></button>
-                    </div>
-                    <form action="app.php?action=newArticle" method="POST" enctype="multipart/form-data">
-                        <div class="modal-body">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%; width: 80%;" @click.away="openAddModal = false">
+
+                <form action="app.php?action=newArticle" method="POST" enctype="multipart/form-data">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Rédiger un nouvel article</h5>
+                            <button type="button" class="btn-close" @click="openAddModal = false"></button>
+                        </div>
+
+                        <input type="hidden" value="{{ user_id }}" name="id"/>
+
+                        <div class="modal-body" x-data="{ content: '' }">
                             <div class="mb-3">
                                 <label class="form-label">Titre</label>
                                 <textarea class="form-control" name="titre" rows="2" required></textarea>
@@ -29,21 +33,24 @@
                                 <input type="file" name="file" class="form-control" accept="image/png, image/jpeg">
                             </div>
                             <hr>
-                            <div class="mb-3">
-                                <label class="form-label">Contenu</label>
-                                <textarea class="form-control" name="contenu" rows="8" required></textarea>
+                            <div class="row">
+                                <div class="col-12 col-lg-6 mb-3">
+                                    <label class="form-label">Contenu (Markdown)</label>
+                                    <textarea class="form-control" name="contenu" rows="15" required x-model="content" placeholder="Écrivez ici..."></textarea>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-3">
+                                    <label class="form-label text-muted"><i class="bi bi-eye"></i> Aperçu du résultat</label>
+                                    <div class="border rounded p-3" style="min-height: 380px;" x-html="content ? marked.parse(content) : '<em class=\'text-muted\'>L\'aperçu s\'affichera ici...</em>'"></div>
+                                </div>
                             </div>
-
+                            <hr>
                             <div class="mb-3" x-data="{ selectedTags: [] }">
                                 <label class="form-label">Tags associés</label>
                                 <div class="d-flex flex-wrap gap-2">
                                     {% for tag in tagsList %}
-                                        <span class="badge rounded-pill cursor-pointer user-select-none"
-                                              style="cursor: pointer; transition: all 0.2s;"
-                                              :class="selectedTags.includes({{ tag.id }}) ? 'bg-primary text-white border-primary' : 'bg-transparent text-secondary border border-secondary'"
-                                              @click="if(selectedTags.includes({{ tag.id }})) { selectedTags = selectedTags.filter(id => id !== {{ tag.id }}) } else { selectedTags.push({{ tag.id }}) }">
-                                            <i x-show="selectedTags.includes({{ tag.id }})" class="bi bi-check-lg me-1"></i>
-                                            {{ tag.nom_tag }}
+                                        <span class="badge rounded-pill cursor-pointer user-select-none" style="cursor: pointer; transition: all 0.2s;" :class="selectedTags.includes({{ tag.id }}) ? 'bg-primary text-white border-primary' : 'bg-transparent text-secondary border border-secondary'" @click="if(selectedTags.includes({{ tag.id }})) { selectedTags = selectedTags.filter(id => id !== {{ tag.id }}) } else { selectedTags.push({{ tag.id }}) }">
+                                        <i x-show="selectedTags.includes({{ tag.id }})" class="bi bi-check-lg me-1"></i>
+                                        {{ tag.nom_tag }}
                                         </span>
                                     {% endfor %}
                                 </div>
@@ -52,14 +59,14 @@
                                 </template>
                             </div>
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="openAddModal = false">Annuler</button>
                             <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white"><i class="bi bi-save"></i> Sauvegarder en brouillon</button>
                             <button type="submit" name="etat" value="publie" class="btn btn-primary"><i class="bi bi-send"></i> Publier maintenant</button>
                         </div>
-                    </form>
-                </div>
-            </div>
+                    </div>
+                </form> </div>
         </div>
     </div>
 
@@ -74,7 +81,6 @@
                     {% if article.statut == 'Brouillon' %}
 
                         <div class="col-6 col-sm-4 col-md-3" x-data="{ openEditModal: false }" x-cloak>
-
                             <div class="card mb-4 shadow-sm">
                                 {% if article.image_une != null %}
                                     <img class="card-img-top" src="static/img/{{ article.image_une }}" alt="Article" style="height: 200px; object-fit: cover;"/>
@@ -92,24 +98,23 @@
                             </div>
 
                             <div class="modal" tabindex="-1" x-show="openEditModal" style="display: block; background-color: rgba(0,0,0,0.5);">
-                                <div class="modal-dialog modal-xl" @click.away="openEditModal = false">
-                                    <div class="modal-content">
+                                <div class="modal-dialog modal-dialog-scrollable modal-xl" style="width:80%; max-width: 80%" @click.away="openEditModal = false">
 
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Modifier le brouillon</h5>
-                                            <button type="button" class="btn-close" @click="openEditModal = false"></button>
-                                        </div>
+                                    <form action="app.php?action=editDraft" method="POST" enctype="multipart/form-data">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Modifier le brouillon</h5>
+                                                <button type="button" class="btn-close" @click="openEditModal = false"></button>
+                                            </div>
 
-                                        <form action="app.php?action=editDraft" method="POST" enctype="multipart/form-data">
                                             <input type="hidden" value="{{ article.id }}" name="id_article"/>
 
-                                            <div class="modal-body">
+                                            <div class="modal-body" x-data="{ content: {{ article.contenu|json_encode }} }">
                                                 <div class="mb-3">
                                                     <label class="form-label">Titre</label>
                                                     <textarea class="form-control" name="titre" rows="2" required>{{ article.titre }}</textarea>
                                                 </div>
                                                 <hr>
-
                                                 <div class="mb-3">
                                                     <label class="form-label">Modifier l'image</label><br>
                                                     {% if article.image_une is defined and article.image_une is not null %}
@@ -127,20 +132,22 @@
                                                     <div class="form-text text-muted">Laisser vide pour conserver l'image actuelle.</div>
                                                 </div>
                                                 <hr>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Contenu</label>
-                                                    <textarea class="form-control" name="contenu" rows="8" required>{{ article.contenu }}</textarea>
+                                                <div class="row">
+                                                    <div class="col-12 col-lg-6 mb-3">
+                                                        <label class="form-label">Contenu (Markdown)</label>
+                                                        <textarea class="form-control" name="contenu" rows="15" required x-model="content"></textarea>
+                                                    </div>
+                                                    <div class="col-12 col-lg-6 mb-3">
+                                                        <label class="form-label text-muted"><i class="bi bi-eye"></i> Aperçu du résultat</label>
+                                                        <div class="border rounded p-3" style="min-height: 380px;" x-html="content ? marked.parse(content) : '<em class=\'text-muted\'>L\'aperçu s\'affichera ici...</em>'"></div>
+                                                    </div>
                                                 </div>
-
+                                                <hr>
                                                 <div class="mb-3" x-data="{ selectedTags: {{ article.tags_ids|json_encode|default('[]') }} }">
                                                     <label class="form-label">Tags associés</label>
                                                     <div class="d-flex flex-wrap gap-2">
                                                         {% for tag in tagsList %}
-                                                            <span class="badge rounded-pill cursor-pointer user-select-none"
-                                                                  style="cursor: pointer; transition: all 0.2s;"
-                                                                  :class="selectedTags.includes({{ tag.id }}) ? 'bg-primary text-white border-primary' : 'bg-transparent text-secondary border border-secondary'"
-                                                                  @click="if(selectedTags.includes({{ tag.id }})) { selectedTags = selectedTags.filter(id => id !== {{ tag.id }}) } else { selectedTags.push({{ tag.id }}) }">
+                                                            <span class="badge rounded-pill cursor-pointer user-select-none" style="cursor: pointer; transition: all 0.2s;" :class="selectedTags.includes({{ tag.id }}) ? 'bg-primary text-white border-primary' : 'bg-transparent text-secondary border border-secondary'" @click="if(selectedTags.includes({{ tag.id }})) { selectedTags = selectedTags.filter(id => id !== {{ tag.id }}) } else { selectedTags.push({{ tag.id }}) }">
                                                                 <i x-show="selectedTags.includes({{ tag.id }})" class="bi bi-check-lg me-1"></i>
                                                                 {{ tag.nom_tag }}
                                                             </span>
@@ -150,7 +157,6 @@
                                                         <input type="hidden" name="tags[]" :value="tagId">
                                                     </template>
                                                 </div>
-
                                             </div>
 
                                             <div class="modal-footer">
@@ -158,10 +164,8 @@
                                                 <button type="submit" name="etat" value="brouillon" class="btn btn-warning text-white"><i class="bi bi-save"></i> Sauvegarder</button>
                                                 <button type="submit" name="etat" value="publie" class="btn btn-primary"><i class="bi bi-send"></i> Publier</button>
                                             </div>
-                                        </form>
-
-                                    </div>
-                                </div>
+                                        </div>
+                                    </form> </div>
                             </div>
                         </div>
                     {% endif %}
@@ -227,5 +231,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
